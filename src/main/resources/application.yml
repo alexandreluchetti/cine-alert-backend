@@ -54,7 +54,7 @@ app:
     enabled: ${FIREBASE_ENABLED:false}
 
   cors:
-    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:8081}
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:8081,http://localhost:5000,http://localhost:5555}
 
   rate-limit:
     login-capacity: 5
