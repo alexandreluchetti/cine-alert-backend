@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: cinealert_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_segura
+      MYSQL_DATABASE: cinealert
+      MYSQL_USER: cinealert_user
+      MYSQL_PASSWORD: cinealert_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # Descomente o adminer abaixo se quiser uma interface web para gerenciar o banco (acesso em http://localhost:8080)
+  # adminer:
+  #   image: adminer:latest
+  #   container_name: cinealert_adminer
+  #   restart: always
+  #   ports:
+  #     - "8081:8080"
+  #   depends_on:
+  #     - db
+
+volumes:
+  mariadb_data:

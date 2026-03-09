@@ -1,0 +1,77 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: cine-alert
+
+  datasource:
+    url: jdbc:sqlite:${DB_PATH:./data/cinealert.db}
+    driver-class-name: org.sqlite.JDBC
+    username: ""
+    password: ""
+
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: never
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:cinealert-super-secret-jwt-key-2024-must-be-at-least-256-bits-long}
+    access-expiration: 3600000        # 1 hour in ms
+    refresh-expiration: 604800000     # 7 days in ms
+
+  imdb:
+    api-key: ${IMDB_API_KEY:4c734d2690msh7f096ff24445fd2p191bd6jsnd0c04fe350c7}
+    base-url: https://imdb8.p.rapidapi.com
+    host: imdb8.p.rapidapi.com
+
+  firebase:
+    credentials-path: ${FIREBASE_CREDENTIALS_PATH:}
+    enabled: ${FIREBASE_ENABLED:false}
+
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:8081}
+
+  rate-limit:
+    login-capacity: 5
+    login-refill-seconds: 60
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+  info:
+    title: CineAlert API
+    description: REST API for CineAlert — Movie & Series Reminder App
+    version: 1.0.0
+
+logging:
+  level:
+    com.cinealert: DEBUG
+    org.springframework.security: INFO
