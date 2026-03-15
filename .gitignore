@@ -1,0 +1,38 @@
+# ─── Git ────────────────────────────────
+.git/
+*.log
+
+# ─── Backend ────────────────────────────
+backend/target/
+backend/.env
+backend/data/
+backend/firebase-credentials.json
+backend/*.db
+backend/.idea/
+
+# ─── Flutter ────────────────────────────
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/build/
+mobile/.idea/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/app/google-services.json
+mobile/ios/Flutter/Generated.xcconfig
+mobile/ios/Flutter/flutter_export_environment.sh
+mobile/ios/Runner/GoogleService-Info.plist
+mobile/.env
+
+# ─── IDEs ───────────────────────────────
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# ─── OS ─────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
