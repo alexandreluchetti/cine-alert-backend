@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.service;
 
-import br.com.alexandreluchetti.cinealert.config.JwtUtil;
+import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
 import br.com.alexandreluchetti.cinealert.dto.auth.*;
 import br.com.alexandreluchetti.cinealert.exception.AppException;
 import br.com.alexandreluchetti.cinealert.model.User;

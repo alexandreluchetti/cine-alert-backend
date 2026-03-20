@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.config;
+package br.com.alexandreluchetti.cinealert.configuration.shared;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

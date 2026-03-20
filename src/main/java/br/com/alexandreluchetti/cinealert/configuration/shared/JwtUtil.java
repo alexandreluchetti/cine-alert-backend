@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.config;
+package br.com.alexandreluchetti.cinealert.configuration.shared;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

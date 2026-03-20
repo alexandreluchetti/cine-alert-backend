@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.config;
+package br.com.alexandreluchetti.cinealert.configuration.shared;
 
 import br.com.alexandreluchetti.cinealert.repository.UserRepository;
 import jakarta.servlet.FilterChain;

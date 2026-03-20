@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.config;
+package br.com.alexandreluchetti.cinealert.configuration.shared;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

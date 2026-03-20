@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.config;
+package br.com.alexandreluchetti.cinealert.configuration.shared;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
