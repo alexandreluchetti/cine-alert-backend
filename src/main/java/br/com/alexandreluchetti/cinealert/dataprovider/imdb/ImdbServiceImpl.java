@@ -122,8 +122,6 @@ public class ImdbServiceImpl implements ImdbService {
         return Arrays.stream(GenreEnum.values()).map(GenreEnum::getValue).toList();
     }
 
-    // --- Mappers ---
-
     private ContentResponse mapToContentResponse(JsonNode node) {
         String id = node.path("id").asText("").replace("/title/", "").replace("/", "");
         if (id.isEmpty() || !id.startsWith("tt"))
