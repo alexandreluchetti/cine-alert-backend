@@ -11,7 +11,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.cinealert</groupId>
+    <groupId>br.com.alexandreluchetti.cinealert</groupId>
     <artifactId>cine-alert-backend</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>

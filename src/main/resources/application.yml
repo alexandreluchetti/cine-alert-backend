@@ -73,5 +73,5 @@ springdoc:
 
 logging:
   level:
-    com.cinealert: DEBUG
+    br.com.alexandreluchetti.cinealert: DEBUG
     org.springframework.security: INFO
