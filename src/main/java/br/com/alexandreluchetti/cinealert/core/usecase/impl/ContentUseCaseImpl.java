@@ -1,5 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
 import br.com.alexandreluchetti.cinealert.dto.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.exception.AppException;
 import br.com.alexandreluchetti.cinealert.integration.ImdbApiClient;
@@ -14,49 +15,53 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
-public class ContentUseCaseImpl {
+public class ContentUseCaseImpl implements ContentUseCase {
 
     private final ImdbApiClient imdbApiClient;
     private final ContentRepository contentRepository;
 
-    // Cache expires after 24 hours
+    public ContentUseCaseImpl(ImdbApiClient imdbApiClient, ContentRepository contentRepository) {
+        this.imdbApiClient = imdbApiClient;
+        this.contentRepository = contentRepository;
+    }
+
     private static final int CACHE_HOURS = 24;
 
+    @Override
     public List<ContentResponse> search(String query, String type, String genre, Integer year, Double minRating) {
         return imdbApiClient.search(query, type, genre, year, minRating);
     }
 
+    @Override
     @Transactional
     public ContentResponse getDetail(String imdbId) {
-        // Check cache
         Optional<Content> cached = contentRepository.findByImdbId(imdbId);
         if (cached.isPresent() && cached.get().getCachedAt().isAfter(LocalDateTime.now().minusHours(CACHE_HOURS))) {
             return toResponse(cached.get());
         }
 
-        // Fetch from IMDB
         ContentResponse response = imdbApiClient.getDetail(imdbId)
                 .orElseThrow(() -> AppException.notFound("Content not found: " + imdbId));
 
-        // Cache it
         cacheContent(imdbId, response, cached.orElse(null));
 
         return response;
     }
 
+    @Override
     @Transactional
     public Content getOrCacheContent(Long contentId) {
         return contentRepository.findById(contentId)
                 .orElseThrow(() -> AppException.notFound("Content not found with id: " + contentId));
     }
 
+    @Override
     public List<ContentResponse> getTrending() {
         return imdbApiClient.getTrending();
     }
 
+    @Override
     public List<String> getGenres() {
         return imdbApiClient.getGenres();
     }
