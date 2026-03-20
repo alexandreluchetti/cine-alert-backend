@@ -9,6 +9,9 @@ data/
 firebase-credentials.json
 *.db
 .idea/
+build_log.txt
+build_log_utf8.txt
+run_log_utf8.txt
 
 # ─── IDEs ───────────────────────────────
 .idea/
