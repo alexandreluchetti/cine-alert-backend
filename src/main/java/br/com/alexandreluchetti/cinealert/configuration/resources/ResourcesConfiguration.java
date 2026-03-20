@@ -51,4 +51,13 @@ public class ResourcesConfiguration {
     ) {
         return new ReminderUseCaseImpl(reminderRepository, contentRepository);
     }
+
+    @Bean
+    public UserUseCase loadUserUseCase(
+            UserRepository userRepository,
+            ReminderRepository reminderRepository,
+            PasswordEncoder passwordEncoder
+    ) {
+        return new UserUseCaseImpl(userRepository, reminderRepository, passwordEncoder);
+    }
 }

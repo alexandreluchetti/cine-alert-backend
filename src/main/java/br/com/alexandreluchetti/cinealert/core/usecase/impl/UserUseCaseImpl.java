@@ -1,5 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.dto.user.UpdateUserRequest;
 import br.com.alexandreluchetti.cinealert.dto.user.UserResponse;
 import br.com.alexandreluchetti.cinealert.exception.AppException;
@@ -7,25 +8,33 @@ import br.com.alexandreluchetti.cinealert.model.User;
 import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@RequiredArgsConstructor
-public class UserUseCaseImpl {
+public class UserUseCaseImpl implements UserUseCase {
 
     private final UserRepository userRepository;
     private final ReminderRepository reminderRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public UserUseCaseImpl(
+            UserRepository userRepository,
+            ReminderRepository reminderRepository,
+            PasswordEncoder passwordEncoder
+    ) {
+        this.userRepository = userRepository;
+        this.reminderRepository = reminderRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
     public UserResponse getProfile(User user) {
         long total = reminderRepository.countByUserId(user.getId());
         long sent = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.SENT);
         return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl(), total, sent);
     }
 
+    @Override
     @Transactional
     public UserResponse updateProfile(User user, UpdateUserRequest request) {
         if (request.name() != null && !request.name().isBlank()) {
@@ -38,6 +47,7 @@ public class UserUseCaseImpl {
         return getProfile(user);
     }
 
+    @Override
     @Transactional
     public UserResponse updateAvatar(User user, String avatarUrl) {
         user.setAvatarUrl(avatarUrl);
@@ -45,18 +55,21 @@ public class UserUseCaseImpl {
         return getProfile(user);
     }
 
+    @Override
     @Transactional
     public void updateFcmToken(User user, String fcmToken) {
         user.setFcmToken(fcmToken);
         userRepository.save(user);
     }
 
+    @Override
     @Transactional
     public void deleteAccount(User user) {
         user.setActive(false);
         userRepository.save(user);
     }
 
+    @Override
     public User getAuthenticatedUser(org.springframework.security.core.Authentication authentication) {
         String email = authentication.getName();
         return userRepository.findByEmail(email)
