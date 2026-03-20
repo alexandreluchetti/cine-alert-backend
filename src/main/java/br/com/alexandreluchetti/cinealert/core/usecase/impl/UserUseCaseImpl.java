@@ -3,7 +3,7 @@ package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.core.dto.user.UpdateUserRequest;
 import br.com.alexandreluchetti.cinealert.core.dto.user.UserResponse;
-import br.com.alexandreluchetti.cinealert.exception.AppException;
+import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.model.User;
 import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.repository.ReminderRepository;

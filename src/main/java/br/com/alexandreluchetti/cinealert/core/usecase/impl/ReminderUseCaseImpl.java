@@ -5,7 +5,7 @@ import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderRequest;
 import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderStatsResponse;
-import br.com.alexandreluchetti.cinealert.exception.AppException;
+import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.model.Content;
 import br.com.alexandreluchetti.cinealert.model.Reminder;
 import br.com.alexandreluchetti.cinealert.model.User;

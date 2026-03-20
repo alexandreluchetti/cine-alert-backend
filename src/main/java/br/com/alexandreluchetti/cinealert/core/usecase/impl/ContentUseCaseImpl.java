@@ -2,7 +2,7 @@ package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
 import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
-import br.com.alexandreluchetti.cinealert.exception.AppException;
+import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.integration.ImdbApiClient;
 import br.com.alexandreluchetti.cinealert.model.Content;
 import br.com.alexandreluchetti.cinealert.repository.ContentRepository;

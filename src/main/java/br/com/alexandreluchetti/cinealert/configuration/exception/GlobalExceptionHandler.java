@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.exception;
+package br.com.alexandreluchetti.cinealert.configuration.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

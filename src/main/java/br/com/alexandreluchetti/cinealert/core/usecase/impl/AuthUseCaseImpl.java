@@ -3,7 +3,7 @@ package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
 import br.com.alexandreluchetti.cinealert.core.dto.auth.*;
-import br.com.alexandreluchetti.cinealert.exception.AppException;
+import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.model.User;
 import br.com.alexandreluchetti.cinealert.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
