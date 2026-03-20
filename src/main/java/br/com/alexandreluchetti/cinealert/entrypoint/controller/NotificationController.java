@@ -1,7 +1,7 @@
-package br.com.alexandreluchetti.cinealert.controller;
+package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.core.dto.notification.FcmTokenRequest;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.notification.FcmTokenRequest;
 import br.com.alexandreluchetti.cinealert.core.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

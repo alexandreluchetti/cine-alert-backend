@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.repository;
+package br.com.alexandreluchetti.cinealert.dataprovider.repository;
 
 import br.com.alexandreluchetti.cinealert.core.model.Content;
 import org.springframework.data.jpa.repository.JpaRepository;

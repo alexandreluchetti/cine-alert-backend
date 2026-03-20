@@ -1,6 +1,6 @@
-package br.com.alexandreluchetti.cinealert.core.dto.reminder;
+package br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder;
 
-import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 

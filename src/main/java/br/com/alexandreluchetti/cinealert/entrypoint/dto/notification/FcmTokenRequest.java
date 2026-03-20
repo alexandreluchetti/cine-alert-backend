@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.core.dto.notification;
+package br.com.alexandreluchetti.cinealert.entrypoint.dto.notification;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -1,10 +1,10 @@
-package br.com.alexandreluchetti.cinealert.controller;
+package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderRequest;
-import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderResponse;
-import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderStatsResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequest;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponse;
 import br.com.alexandreluchetti.cinealert.core.model.User;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import io.swagger.v3.oas.annotations.Operation;

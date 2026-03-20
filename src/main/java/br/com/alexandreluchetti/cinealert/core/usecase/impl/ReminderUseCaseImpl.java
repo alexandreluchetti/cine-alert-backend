@@ -1,18 +1,18 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
-import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
-import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderRequest;
-import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderResponse;
-import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderStatsResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequest;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponse;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.Content;
 import br.com.alexandreluchetti.cinealert.core.model.Reminder;
 import br.com.alexandreluchetti.cinealert.core.model.User;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import br.com.alexandreluchetti.cinealert.repository.ContentRepository;
-import br.com.alexandreluchetti.cinealert.repository.ReminderRepository;
+import br.com.alexandreluchetti.cinealert.dataprovider.repository.ContentRepository;
+import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

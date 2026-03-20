@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.core.dto.auth;
+package br.com.alexandreluchetti.cinealert.entrypoint.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

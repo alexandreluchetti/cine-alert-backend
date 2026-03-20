@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.repository;
+package br.com.alexandreluchetti.cinealert.dataprovider.repository;
 
 import br.com.alexandreluchetti.cinealert.core.model.Reminder;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;

@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.configuration.shared;
 
-import br.com.alexandreluchetti.cinealert.repository.UserRepository;
+import br.com.alexandreluchetti.cinealert.dataprovider.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

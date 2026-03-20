@@ -1,13 +1,13 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.core.dto.user.UpdateUserRequest;
-import br.com.alexandreluchetti.cinealert.core.dto.user.UserResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequest;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UserResponse;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.User;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import br.com.alexandreluchetti.cinealert.repository.ReminderRepository;
-import br.com.alexandreluchetti.cinealert.repository.UserRepository;
+import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepository;
+import br.com.alexandreluchetti.cinealert.dataprovider.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.core.dto.auth;
+package br.com.alexandreluchetti.cinealert.entrypoint.dto.auth;
 
 public record AuthResponse(
     String accessToken,

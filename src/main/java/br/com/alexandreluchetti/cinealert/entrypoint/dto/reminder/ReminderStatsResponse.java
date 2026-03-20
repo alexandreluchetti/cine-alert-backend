@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.core.dto.reminder;
+package br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder;
 
 public record ReminderStatsResponse(
     long total,

@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.core.dto.content;
+package br.com.alexandreluchetti.cinealert.entrypoint.dto.content;
 
 import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 

@@ -1,7 +1,7 @@
-package br.com.alexandreluchetti.cinealert.controller;
+package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
-import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
