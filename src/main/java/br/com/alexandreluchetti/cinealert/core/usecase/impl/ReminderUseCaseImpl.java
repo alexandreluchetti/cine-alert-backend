@@ -1,5 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.dto.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.dto.reminder.ReminderRequest;
 import br.com.alexandreluchetti.cinealert.dto.reminder.ReminderResponse;
@@ -12,19 +13,21 @@ import br.com.alexandreluchetti.cinealert.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.repository.ReminderRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class ReminderUseCaseImpl {
+public class ReminderUseCaseImpl implements ReminderUseCase {
 
     private final ReminderRepository reminderRepository;
     private final ContentRepository contentRepository;
 
+    public ReminderUseCaseImpl(ReminderRepository reminderRepository, ContentRepository contentRepository) {
+        this.reminderRepository = reminderRepository;
+        this.contentRepository = contentRepository;
+    }
+
+    @Override
     public List<ReminderResponse> getReminders(User user, ReminderStatus status) {
         List<Reminder> reminders = status != null
                 ? reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc(user.getId(), status)
@@ -33,6 +36,7 @@ public class ReminderUseCaseImpl {
         return reminders.stream().map(this::toResponse).toList();
     }
 
+    @Override
     @Transactional
     public ReminderResponse create(User user, ReminderRequest request) {
         Content content = contentRepository.findById(request.contentId())
@@ -50,12 +54,14 @@ public class ReminderUseCaseImpl {
         return toResponse(reminderRepository.save(reminder));
     }
 
+    @Override
     public ReminderResponse getById(User user, Long id) {
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
         return toResponse(reminder);
     }
 
+    @Override
     @Transactional
     public ReminderResponse update(User user, Long id, ReminderRequest request) {
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
@@ -75,6 +81,7 @@ public class ReminderUseCaseImpl {
         return toResponse(reminderRepository.save(reminder));
     }
 
+    @Override
     @Transactional
     public void cancel(User user, Long id) {
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
@@ -88,6 +95,7 @@ public class ReminderUseCaseImpl {
         reminderRepository.save(reminder);
     }
 
+    @Override
     public ReminderStatsResponse getStats(User user) {
         long total = reminderRepository.countByUserId(user.getId());
         long pending = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.PENDING);
