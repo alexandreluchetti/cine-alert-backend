@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.dto.user;
+package br.com.alexandreluchetti.cinealert.core.dto.user;
 
 import jakarta.validation.constraints.Size;
 

@@ -1,10 +1,10 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
-import br.com.alexandreluchetti.cinealert.dto.content.ContentResponse;
-import br.com.alexandreluchetti.cinealert.dto.reminder.ReminderRequest;
-import br.com.alexandreluchetti.cinealert.dto.reminder.ReminderResponse;
-import br.com.alexandreluchetti.cinealert.dto.reminder.ReminderStatsResponse;
+import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderRequest;
+import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderResponse;
+import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderStatsResponse;
 import br.com.alexandreluchetti.cinealert.exception.AppException;
 import br.com.alexandreluchetti.cinealert.model.Content;
 import br.com.alexandreluchetti.cinealert.model.Reminder;

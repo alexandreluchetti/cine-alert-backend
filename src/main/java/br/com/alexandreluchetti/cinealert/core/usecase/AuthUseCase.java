@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase;
 
-import br.com.alexandreluchetti.cinealert.dto.auth.*;
+import br.com.alexandreluchetti.cinealert.core.dto.auth.*;
 
 public interface AuthUseCase {
 

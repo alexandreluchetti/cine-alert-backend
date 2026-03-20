@@ -1,7 +1,7 @@
 package br.com.alexandreluchetti.cinealert.controller;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
-import br.com.alexandreluchetti.cinealert.dto.auth.*;
+import br.com.alexandreluchetti.cinealert.core.dto.auth.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

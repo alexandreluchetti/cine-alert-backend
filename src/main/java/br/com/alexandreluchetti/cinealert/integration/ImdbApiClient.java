@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.integration;
 
-import br.com.alexandreluchetti.cinealert.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.model.enums.ContentType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

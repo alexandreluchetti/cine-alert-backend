@@ -1,8 +1,8 @@
 package br.com.alexandreluchetti.cinealert.controller;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.dto.user.UpdateUserRequest;
-import br.com.alexandreluchetti.cinealert.dto.user.UserResponse;
+import br.com.alexandreluchetti.cinealert.core.dto.user.UpdateUserRequest;
+import br.com.alexandreluchetti.cinealert.core.dto.user.UserResponse;
 import br.com.alexandreluchetti.cinealert.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

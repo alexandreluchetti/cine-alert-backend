@@ -1,13 +1,10 @@
-package br.com.alexandreluchetti.cinealert.dto.auth;
+package br.com.alexandreluchetti.cinealert.core.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record LoginRequest(
+public record ForgotPasswordRequest(
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    String email,
-
-    @NotBlank(message = "Password is required")
-    String password
+    String email
 ) {}
