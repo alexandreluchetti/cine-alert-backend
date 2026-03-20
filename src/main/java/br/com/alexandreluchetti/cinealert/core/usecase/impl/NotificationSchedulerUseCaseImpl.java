@@ -1,29 +1,32 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
+import br.com.alexandreluchetti.cinealert.core.usecase.NotificationSchedulerUseCase;
 import br.com.alexandreluchetti.cinealert.model.Reminder;
 import br.com.alexandreluchetti.cinealert.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.repository.ReminderRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
-public class NotificationSchedulerUseCaseImpl {
+public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUseCase {
 
     private final ReminderRepository reminderRepository;
     private final FcmUseCase fcmUseCase;
 
-    @Scheduled(fixedDelay = 60000) // every 60 seconds
+    public NotificationSchedulerUseCaseImpl(ReminderRepository reminderRepository, FcmUseCase fcmUseCase) {
+        this.reminderRepository = reminderRepository;
+        this.fcmUseCase = fcmUseCase;
+    }
+
+    @Override
     @Transactional
+    @Scheduled(fixedDelay = 60000) // every 60 seconds
     public void processarLembretesPendentes() {
         List<Reminder> pendentes = reminderRepository
                 .findByStatusAndScheduledAtLessThanEqual(ReminderStatus.PENDING, LocalDateTime.now());

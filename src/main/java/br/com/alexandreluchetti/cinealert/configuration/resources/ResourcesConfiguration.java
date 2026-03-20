@@ -4,11 +4,14 @@ import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
+import br.com.alexandreluchetti.cinealert.core.usecase.NotificationSchedulerUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.impl.AuthUseCaseImpl;
 import br.com.alexandreluchetti.cinealert.core.usecase.impl.ContentUseCaseImpl;
 import br.com.alexandreluchetti.cinealert.core.usecase.impl.FcmUseCaseImpl;
+import br.com.alexandreluchetti.cinealert.core.usecase.impl.NotificationSchedulerUseCaseImpl;
 import br.com.alexandreluchetti.cinealert.integration.ImdbApiClient;
 import br.com.alexandreluchetti.cinealert.repository.ContentRepository;
+import br.com.alexandreluchetti.cinealert.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,5 +40,13 @@ public class ResourcesConfiguration {
     @Bean
     public FcmUseCase loadFcmUseCase() {
         return new FcmUseCaseImpl();
+    }
+
+    @Bean
+    public NotificationSchedulerUseCase loadNotificationSchedulerUseCase(
+            ReminderRepository reminderRepository,
+            FcmUseCase fcmUseCase
+    ) {
+        return new NotificationSchedulerUseCaseImpl(reminderRepository, fcmUseCase);
     }
 }
