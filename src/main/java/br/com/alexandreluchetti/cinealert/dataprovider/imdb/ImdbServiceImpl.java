@@ -119,9 +119,7 @@ public class ImdbServiceImpl implements ImdbService {
 
     @Override
     public List<String> getGenres() {
-        return List.of("Action", "Adventure", "Animation", "Biography", "Comedy", "Crime",
-                "Documentary", "Drama", "Fantasy", "Horror", "Music", "Mystery",
-                "Romance", "Sci-Fi", "Sport", "Thriller", "War", "Western");
+        return Arrays.stream(GenreEnum.values()).map(GenreEnum::getValue).toList();
     }
 
     // --- Mappers ---
