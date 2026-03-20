@@ -1,11 +1,13 @@
-package br.com.alexandreluchetti.cinealert.integration;
+package br.com.alexandreluchetti.cinealert.dataprovider.imdb;
 
 import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
+import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
@@ -13,9 +15,9 @@ import org.springframework.http.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-@Component
 @Slf4j
-public class ImdbApiClient {
+@Component
+public class ImdbServiceImpl implements ImdbService {
 
     @Value("${app.imdb.api-key}")
     private String apiKey;
@@ -26,8 +28,13 @@ public class ImdbApiClient {
     @Value("${app.imdb.host}")
     private String apiHost;
 
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final RestTemplate restTemplate;
+    private final ObjectMapper mapper;
+
+    public ImdbServiceImpl() {
+        this.restTemplate = new RestTemplate();
+        this.mapper = new ObjectMapper();
+    }
 
     private HttpHeaders buildHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -37,6 +44,7 @@ public class ImdbApiClient {
         return headers;
     }
 
+    @Override
     public List<ContentResponse> search(String query, String type, String genre, Integer year, Double minRating) {
         try {
             String url = baseUrl + "/title/find?q=" + encodeQuery(query);
@@ -62,6 +70,7 @@ public class ImdbApiClient {
         }
     }
 
+    @Override
     public Optional<ContentResponse> getDetail(String imdbId) {
         try {
             String url = baseUrl + "/title/get-overview-details?tconst=" + imdbId + "&currentCountry=BR";
@@ -76,6 +85,7 @@ public class ImdbApiClient {
         }
     }
 
+    @Override
     public List<ContentResponse> getTrending() {
         try {
             String url = baseUrl + "/title/get-top-rated-movies";
@@ -108,6 +118,7 @@ public class ImdbApiClient {
         }
     }
 
+    @Override
     public List<String> getGenres() {
         return List.of("Action", "Adventure", "Animation", "Biography", "Comedy", "Crime",
                 "Documentary", "Drama", "Fantasy", "Horror", "Music", "Mystery",

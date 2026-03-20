@@ -1,9 +1,10 @@
 package br.com.alexandreluchetti.cinealert.configuration.resources;
 
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
+import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import br.com.alexandreluchetti.cinealert.core.usecase.*;
 import br.com.alexandreluchetti.cinealert.core.usecase.impl.*;
-import br.com.alexandreluchetti.cinealert.integration.ImdbApiClient;
+import br.com.alexandreluchetti.cinealert.dataprovider.imdb.ImdbServiceImpl;
 import br.com.alexandreluchetti.cinealert.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.repository.UserRepository;
@@ -25,10 +26,10 @@ public class ResourcesConfiguration {
 
     @Bean
     public ContentUseCase loadContentUseCase(
-            ImdbApiClient imdbApiClient,
+            ImdbServiceImpl imdbServiceImpl,
             ContentRepository contentRepository
     ) {
-        return new ContentUseCaseImpl(imdbApiClient, contentRepository);
+        return new ContentUseCaseImpl(imdbServiceImpl, contentRepository);
     }
 
     @Bean
@@ -59,5 +60,10 @@ public class ResourcesConfiguration {
             PasswordEncoder passwordEncoder
     ) {
         return new UserUseCaseImpl(userRepository, reminderRepository, passwordEncoder);
+    }
+
+    @Bean
+    public ImdbService loadImdbService() {
+        return new ImdbServiceImpl();
     }
 }

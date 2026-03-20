@@ -1,9 +1,9 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
 import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
-import br.com.alexandreluchetti.cinealert.integration.ImdbApiClient;
 import br.com.alexandreluchetti.cinealert.core.model.Content;
 import br.com.alexandreluchetti.cinealert.repository.ContentRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +16,11 @@ import java.util.Optional;
 @Slf4j
 public class ContentUseCaseImpl implements ContentUseCase {
 
-    private final ImdbApiClient imdbApiClient;
+    private final ImdbService imdbService;
     private final ContentRepository contentRepository;
 
-    public ContentUseCaseImpl(ImdbApiClient imdbApiClient, ContentRepository contentRepository) {
-        this.imdbApiClient = imdbApiClient;
+    public ContentUseCaseImpl(ImdbService imdbService, ContentRepository contentRepository) {
+        this.imdbService = imdbService;
         this.contentRepository = contentRepository;
     }
 
@@ -28,7 +28,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
 
     @Override
     public List<ContentResponse> search(String query, String type, String genre, Integer year, Double minRating) {
-        return imdbApiClient.search(query, type, genre, year, minRating);
+        return imdbService.search(query, type, genre, year, minRating);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
             return toResponse(cached.get());
         }
 
-        ContentResponse response = imdbApiClient.getDetail(imdbId)
+        ContentResponse response = imdbService.getDetail(imdbId)
                 .orElseThrow(() -> AppException.notFound("Content not found: " + imdbId));
 
         cacheContent(imdbId, response, cached.orElse(null));
@@ -56,12 +56,12 @@ public class ContentUseCaseImpl implements ContentUseCase {
 
     @Override
     public List<ContentResponse> getTrending() {
-        return imdbApiClient.getTrending();
+        return imdbService.getTrending();
     }
 
     @Override
     public List<String> getGenres() {
-        return imdbApiClient.getGenres();
+        return imdbService.getGenres();
     }
 
     private void cacheContent(String imdbId, ContentResponse response, Content existing) {
