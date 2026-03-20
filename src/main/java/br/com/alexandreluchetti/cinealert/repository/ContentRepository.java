@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.repository;
 
-import br.com.alexandreluchetti.cinealert.model.Content;
+import br.com.alexandreluchetti.cinealert.core.model.Content;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

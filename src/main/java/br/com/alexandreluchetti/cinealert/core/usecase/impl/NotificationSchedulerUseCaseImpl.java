@@ -2,9 +2,9 @@ package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.NotificationSchedulerUseCase;
-import br.com.alexandreluchetti.cinealert.model.Reminder;
-import br.com.alexandreluchetti.cinealert.model.enums.Recurrence;
-import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
+import br.com.alexandreluchetti.cinealert.core.model.Reminder;
+import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
+import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.repository.ReminderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -1,7 +1,7 @@
 package br.com.alexandreluchetti.cinealert.core.usecase;
 
 import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
-import br.com.alexandreluchetti.cinealert.model.Content;
+import br.com.alexandreluchetti.cinealert.core.model.Content;
 
 import java.util.List;
 

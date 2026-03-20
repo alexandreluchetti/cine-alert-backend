@@ -1,8 +1,8 @@
 package br.com.alexandreluchetti.cinealert.core.dto.reminder;
 
 import br.com.alexandreluchetti.cinealert.core.dto.content.ContentResponse;
-import br.com.alexandreluchetti.cinealert.model.enums.Recurrence;
-import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
+import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
+import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 
 import java.time.LocalDateTime;
 

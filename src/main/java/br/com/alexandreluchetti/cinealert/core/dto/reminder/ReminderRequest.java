@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.dto.reminder;
 
-import br.com.alexandreluchetti.cinealert.model.enums.Recurrence;
+import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.dto.content;
 
-import br.com.alexandreluchetti.cinealert.model.enums.ContentType;
+import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 
 import java.math.BigDecimal;
 

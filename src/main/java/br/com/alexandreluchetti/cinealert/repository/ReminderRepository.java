@@ -1,7 +1,7 @@
 package br.com.alexandreluchetti.cinealert.repository;
 
-import br.com.alexandreluchetti.cinealert.model.Reminder;
-import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
+import br.com.alexandreluchetti.cinealert.core.model.Reminder;
+import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

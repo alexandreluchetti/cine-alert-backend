@@ -1,6 +1,6 @@
-package br.com.alexandreluchetti.cinealert.model;
+package br.com.alexandreluchetti.cinealert.core.model;
 
-import br.com.alexandreluchetti.cinealert.model.enums.ContentType;
+import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import jakarta.persistence.*;
 import lombok.*;
 

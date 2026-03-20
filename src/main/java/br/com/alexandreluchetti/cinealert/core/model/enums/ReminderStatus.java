@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.model.enums;
+package br.com.alexandreluchetti.cinealert.core.model.enums;
 
 public enum ReminderStatus {
     PENDING,

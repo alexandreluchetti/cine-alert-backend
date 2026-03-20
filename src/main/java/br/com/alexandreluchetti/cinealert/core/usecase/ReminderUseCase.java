@@ -3,8 +3,8 @@ package br.com.alexandreluchetti.cinealert.core.usecase;
 import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderRequest;
 import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.core.dto.reminder.ReminderStatsResponse;
-import br.com.alexandreluchetti.cinealert.model.User;
-import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
+import br.com.alexandreluchetti.cinealert.core.model.User;
+import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 
 import java.util.List;
 

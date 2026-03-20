@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.model;
+package br.com.alexandreluchetti.cinealert.core.model;
 
 import jakarta.persistence.*;
 import lombok.*;

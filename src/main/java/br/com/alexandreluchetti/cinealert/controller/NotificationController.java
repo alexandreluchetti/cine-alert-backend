@@ -2,7 +2,7 @@ package br.com.alexandreluchetti.cinealert.controller;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.core.dto.notification.FcmTokenRequest;
-import br.com.alexandreluchetti.cinealert.model.User;
+import br.com.alexandreluchetti.cinealert.core.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
