@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.service;
+package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.dto.user.UpdateUserRequest;
 import br.com.alexandreluchetti.cinealert.dto.user.UserResponse;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserUseCaseImpl {
 
     private final UserRepository userRepository;
     private final ReminderRepository reminderRepository;

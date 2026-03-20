@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.service;
+package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.dto.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.exception.AppException;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ContentService {
+public class ContentUseCaseImpl {
 
     private final ImdbApiClient imdbApiClient;
     private final ContentRepository contentRepository;

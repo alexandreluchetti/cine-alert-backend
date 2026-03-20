@@ -5,8 +5,8 @@ import br.com.alexandreluchetti.cinealert.dto.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.dto.reminder.ReminderStatsResponse;
 import br.com.alexandreluchetti.cinealert.model.User;
 import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
-import br.com.alexandreluchetti.cinealert.service.ReminderService;
-import br.com.alexandreluchetti.cinealert.service.UserService;
+import br.com.alexandreluchetti.cinealert.core.usecase.impl.ReminderUseCaseImpl;
+import br.com.alexandreluchetti.cinealert.core.usecase.impl.UserUseCaseImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,16 +27,16 @@ import java.util.Map;
 @SecurityRequirement(name = "Bearer Authentication")
 public class ReminderController {
 
-    private final ReminderService reminderService;
-    private final UserService userService;
+    private final ReminderUseCaseImpl reminderUseCaseImpl;
+    private final UserUseCaseImpl userUseCaseImpl;
 
     @GetMapping
     @Operation(summary = "List all reminders for the authenticated user")
     public ResponseEntity<List<ReminderResponse>> getAll(
             Authentication auth,
             @RequestParam(required = false) ReminderStatus status) {
-        User user = userService.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderService.getReminders(user, status));
+        User user = userUseCaseImpl.getAuthenticatedUser(auth);
+        return ResponseEntity.ok(reminderUseCaseImpl.getReminders(user, status));
     }
 
     @PostMapping
@@ -44,15 +44,15 @@ public class ReminderController {
     public ResponseEntity<ReminderResponse> create(
             Authentication auth,
             @Valid @RequestBody ReminderRequest request) {
-        User user = userService.getAuthenticatedUser(auth);
-        return ResponseEntity.status(HttpStatus.CREATED).body(reminderService.create(user, request));
+        User user = userUseCaseImpl.getAuthenticatedUser(auth);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reminderUseCaseImpl.create(user, request));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a specific reminder")
     public ResponseEntity<ReminderResponse> getById(Authentication auth, @PathVariable Long id) {
-        User user = userService.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderService.getById(user, id));
+        User user = userUseCaseImpl.getAuthenticatedUser(auth);
+        return ResponseEntity.ok(reminderUseCaseImpl.getById(user, id));
     }
 
     @PutMapping("/{id}")
@@ -61,22 +61,22 @@ public class ReminderController {
             Authentication auth,
             @PathVariable Long id,
             @Valid @RequestBody ReminderRequest request) {
-        User user = userService.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderService.update(user, id, request));
+        User user = userUseCaseImpl.getAuthenticatedUser(auth);
+        return ResponseEntity.ok(reminderUseCaseImpl.update(user, id, request));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Cancel a reminder")
     public ResponseEntity<Map<String, String>> delete(Authentication auth, @PathVariable Long id) {
-        User user = userService.getAuthenticatedUser(auth);
-        reminderService.cancel(user, id);
+        User user = userUseCaseImpl.getAuthenticatedUser(auth);
+        reminderUseCaseImpl.cancel(user, id);
         return ResponseEntity.ok(Map.of("message", "Reminder cancelled successfully"));
     }
 
     @GetMapping("/stats")
     @Operation(summary = "Get reminder statistics for the authenticated user")
     public ResponseEntity<ReminderStatsResponse> getStats(Authentication auth) {
-        User user = userService.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderService.getStats(user));
+        User user = userUseCaseImpl.getAuthenticatedUser(auth);
+        return ResponseEntity.ok(reminderUseCaseImpl.getStats(user));
     }
 }

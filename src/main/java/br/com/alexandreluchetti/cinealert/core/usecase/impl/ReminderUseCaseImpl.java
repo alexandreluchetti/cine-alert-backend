@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.service;
+package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.dto.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.dto.reminder.ReminderRequest;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ReminderService {
+public class ReminderUseCaseImpl {
 
     private final ReminderRepository reminderRepository;
     private final ContentRepository contentRepository;
