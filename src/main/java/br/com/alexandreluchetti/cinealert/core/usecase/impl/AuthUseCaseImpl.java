@@ -1,6 +1,7 @@
-package br.com.alexandreluchetti.cinealert.service;
+package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
+import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
 import br.com.alexandreluchetti.cinealert.dto.auth.*;
 import br.com.alexandreluchetti.cinealert.exception.AppException;
 import br.com.alexandreluchetti.cinealert.model.User;
@@ -12,18 +13,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
-public class AuthService {
+public class AuthUseCaseImpl implements AuthUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    public AuthUseCaseImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+    }
+
     @Value("${app.jwt.access-expiration}")
     private long accessExpiration;
 
+    @Override
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -41,6 +47,7 @@ public class AuthService {
         return buildAuthResponse(user);
     }
 
+    @Override
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> AppException.unauthorized("Invalid email or password"));
@@ -56,6 +63,7 @@ public class AuthService {
         return buildAuthResponse(user);
     }
 
+    @Override
     public AuthResponse refresh(RefreshRequest request) {
         String token = request.refreshToken();
 
@@ -70,6 +78,7 @@ public class AuthService {
         return buildAuthResponse(user);
     }
 
+    @Override
     public void forgotPassword(ForgotPasswordRequest request) {
         // In a real app, send email with reset link
         // For now, log and return success (don't reveal if email exists)
