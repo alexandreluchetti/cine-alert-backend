@@ -3,8 +3,10 @@ package br.com.alexandreluchetti.cinealert.configuration.resources;
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
+import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.impl.AuthUseCaseImpl;
 import br.com.alexandreluchetti.cinealert.core.usecase.impl.ContentUseCaseImpl;
+import br.com.alexandreluchetti.cinealert.core.usecase.impl.FcmUseCaseImpl;
 import br.com.alexandreluchetti.cinealert.integration.ImdbApiClient;
 import br.com.alexandreluchetti.cinealert.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.repository.UserRepository;
@@ -30,5 +32,10 @@ public class ResourcesConfiguration {
             ContentRepository contentRepository
     ) {
         return new ContentUseCaseImpl(imdbApiClient, contentRepository);
+    }
+
+    @Bean
+    public FcmUseCase loadFcmUseCase() {
+        return new FcmUseCaseImpl();
     }
 }

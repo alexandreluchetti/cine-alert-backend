@@ -1,12 +1,12 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-@Service
 @Slf4j
-public class FcmUseCaseImpl {
+public class FcmUseCaseImpl implements FcmUseCase {
 
     @Value("${app.firebase.enabled:false}")
     private boolean firebaseEnabled;

@@ -1,5 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
 import br.com.alexandreluchetti.cinealert.model.Reminder;
 import br.com.alexandreluchetti.cinealert.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.model.enums.ReminderStatus;
@@ -19,7 +20,7 @@ import java.util.List;
 public class NotificationSchedulerUseCaseImpl {
 
     private final ReminderRepository reminderRepository;
-    private final FcmUseCaseImpl fcmUseCaseImpl;
+    private final FcmUseCase fcmUseCase;
 
     @Scheduled(fixedDelay = 60000) // every 60 seconds
     @Transactional
@@ -39,7 +40,7 @@ public class NotificationSchedulerUseCaseImpl {
                         ? reminder.getMessage()
                         : "Hora do seu lembrete de cinema!";
 
-                fcmUseCaseImpl.sendNotification(
+                fcmUseCase.sendNotification(
                         reminder.getUser().getFcmToken(),
                         title,
                         body);
