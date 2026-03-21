@@ -6,7 +6,7 @@ import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 
 import java.time.LocalDateTime;
 
-public record ReminderResponse(
+public record ReminderResponse(//TODO
     Long id,
     ContentResponseDto content,
     LocalDateTime scheduledAt,

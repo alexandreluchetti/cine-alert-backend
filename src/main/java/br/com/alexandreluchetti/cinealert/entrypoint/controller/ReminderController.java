@@ -4,7 +4,7 @@ import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequestDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponseDto;
 import br.com.alexandreluchetti.cinealert.core.model.User;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -75,8 +75,10 @@ public class ReminderController {
 
     @GetMapping("/stats")
     @Operation(summary = "Get reminder statistics for the authenticated user")
-    public ResponseEntity<ReminderStatsResponse> getStats(Authentication auth) {
+    public ResponseEntity<ReminderStatsResponseDto> getStats(Authentication auth) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderUseCase.getStats(user));
+        return ResponseEntity.ok(
+                ReminderStatsResponseDto.fromModel(reminderUseCase.getStats(user))
+        );
     }
 }
