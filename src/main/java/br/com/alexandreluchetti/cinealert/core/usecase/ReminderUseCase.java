@@ -17,7 +17,7 @@ public interface ReminderUseCase {
 
     ReminderResponse getById(User user, Long id);
 
-    ReminderResponse update(User user, Long id, ReminderRequestDto request);
+    ReminderResponse update(User user, Long id, ReminderRequest request);
 
     void cancel(User user, Long id);
 

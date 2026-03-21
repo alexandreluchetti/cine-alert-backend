@@ -62,7 +62,7 @@ public class ReminderController {
             @PathVariable Long id,
             @Valid @RequestBody ReminderRequestDto request) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderUseCase.update(user, id, request));
+        return ResponseEntity.ok(reminderUseCase.update(user, id, request.toModel()));
     }
 
     @DeleteMapping("/{id}")

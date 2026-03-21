@@ -64,7 +64,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     @Override
     @Transactional
-    public ReminderResponse update(User user, Long id, ReminderRequestDto request) {
+    public ReminderResponse update(User user, Long id, ReminderRequest request) {
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 
@@ -72,12 +72,12 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
             throw AppException.badRequest("Cannot update an already sent reminder");
         }
 
-        if (request.scheduledAt() != null)
-            reminder.setScheduledAt(request.scheduledAt());
-        if (request.recurrence() != null)
-            reminder.setRecurrence(request.recurrence());
-        if (request.message() != null)
-            reminder.setMessage(request.message());
+        if (request.getScheduledAt() != null)
+            reminder.setScheduledAt(request.getScheduledAt());
+        if (request.getRecurrence() != null)
+            reminder.setRecurrence(request.getRecurrence());
+        if (request.getMessage() != null)
+            reminder.setMessage(request.getMessage());
 
         return toResponse(reminderRepository.save(reminder));
     }
