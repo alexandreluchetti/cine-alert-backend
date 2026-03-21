@@ -34,13 +34,13 @@ public class ContentUseCaseImpl implements ContentUseCase {
 
     @Override
     @Transactional
-    public ContentResponseDto getDetail(String imdbId) {
+    public ContentResponse getDetail(String imdbId) {
         Optional<Content> cached = contentRepository.findByImdbId(imdbId);
         if (cached.isPresent() && cached.get().getCachedAt().isAfter(LocalDateTime.now().minusHours(CACHE_HOURS))) {
             return toResponse(cached.get());
         }
 
-        ContentResponseDto response = imdbService.getDetail(imdbId)
+        ContentResponse response = imdbService.getDetail(imdbId)
                 .orElseThrow(() -> AppException.notFound("Content not found: " + imdbId));
 
         cacheContent(imdbId, response, cached.orElse(null));
@@ -65,23 +65,23 @@ public class ContentUseCaseImpl implements ContentUseCase {
         return imdbService.getGenres();
     }
 
-    private void cacheContent(String imdbId, ContentResponseDto response, Content existing) {
+    private void cacheContent(String imdbId, ContentResponse response, Content existing) {
         Content content = existing != null ? existing : Content.builder().imdbId(imdbId).build();
-        content.setTitle(response.title());
-        content.setType(response.type());
-        content.setPosterUrl(response.posterUrl());
-        content.setYear(response.year());
-        content.setRating(response.rating());
-        content.setGenre(response.genre());
-        content.setSynopsis(response.synopsis());
-        content.setTrailerUrl(response.trailerUrl());
-        content.setRuntimeMinutes(response.runtimeMinutes());
+        content.setTitle(response.getTitle());
+        content.setType(response.getType());
+        content.setPosterUrl(response.getPosterUrl());
+        content.setYear(response.getYear());
+        content.setRating(response.getRating());
+        content.setGenre(response.getGenre());
+        content.setSynopsis(response.getSynopsis());
+        content.setTrailerUrl(response.getTrailerUrl());
+        content.setRuntimeMinutes(response.getRuntimeMinutes());
         content.setCachedAt(LocalDateTime.now());
         contentRepository.save(content);
     }
 
-    private ContentResponseDto toResponse(Content c) {
-        return new ContentResponseDto(
+    private ContentResponse toResponse(Content c) {
+        return new ContentResponse(
                 c.getId(), c.getImdbId(), c.getTitle(), c.getType(),
                 c.getPosterUrl(), c.getYear(), c.getRating(),
                 c.getGenre(), c.getSynopsis(), c.getTrailerUrl(), c.getRuntimeMinutes());

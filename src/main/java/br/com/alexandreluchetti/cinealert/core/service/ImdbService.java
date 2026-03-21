@@ -10,7 +10,7 @@ public interface ImdbService {
 
     List<ContentResponse> search(String query, String type, String genre, Integer year, Double minRating);
 
-    Optional<ContentResponseDto> getDetail(String imdbId);
+    Optional<ContentResponse> getDetail(String imdbId);
 
     List<ContentResponseDto> getTrending();
 

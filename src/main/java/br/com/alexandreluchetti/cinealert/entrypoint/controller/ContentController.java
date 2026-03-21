@@ -37,7 +37,9 @@ public class ContentController {
     @GetMapping("/{imdbId}")
     @Operation(summary = "Get content detail by IMDB ID")
     public ResponseEntity<ContentResponseDto> getDetail(@PathVariable String imdbId) {
-        return ResponseEntity.ok(contentUseCase.getDetail(imdbId));
+        return ResponseEntity.ok(
+                ContentResponseDto.fromModel(contentUseCase.getDetail(imdbId))
+        );
     }
 
     @GetMapping("/trending")

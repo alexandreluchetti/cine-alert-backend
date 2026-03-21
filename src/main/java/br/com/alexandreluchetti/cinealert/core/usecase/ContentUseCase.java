@@ -10,7 +10,7 @@ public interface ContentUseCase {
 
     List<ContentResponse> search(String query, String type, String genre, Integer year, Double minRating);
 
-    ContentResponseDto getDetail(String imdbId);
+    ContentResponse getDetail(String imdbId);
 
     Content getOrCacheContent(Long contentId);
 

@@ -72,7 +72,7 @@ public class ImdbServiceImpl implements ImdbService {
     }
 
     @Override
-    public Optional<ContentResponseDto> getDetail(String imdbId) {
+    public Optional<ContentResponse> getDetail(String imdbId) {
         try {
             String url = baseUrl + "/title/get-overview-details?tconst=" + imdbId + "&currentCountry=BR";
             ResponseEntity<String> response = restTemplate.exchange(
@@ -145,7 +145,7 @@ public class ImdbServiceImpl implements ImdbService {
                 node.path("runningTimeInMinutes").asInt(0) > 0 ? node.path("runningTimeInMinutes").asInt() : null);
     }
 
-    private ContentResponseDto mapDetailToContentResponse(String imdbId, JsonNode root) {
+    private ContentResponse mapDetailToContentResponse(String imdbId, JsonNode root) {
         JsonNode title = root.path("title");
         if (title.isMissingNode())
             return null;
@@ -156,7 +156,7 @@ public class ImdbServiceImpl implements ImdbService {
         JsonNode ratings = root.path("ratings");
         JsonNode plot = root.path("plotSummary");
 
-        return new ContentResponseDto(
+        return new ContentResponse(
                 null, imdbId,
                 title.path("title").asText("Unknown"),
                 type,
