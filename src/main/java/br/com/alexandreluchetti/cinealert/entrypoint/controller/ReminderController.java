@@ -2,7 +2,7 @@ package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequest;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequestDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponse;
 import br.com.alexandreluchetti.cinealert.core.model.User;
@@ -43,9 +43,9 @@ public class ReminderController {
     @Operation(summary = "Create a new reminder")
     public ResponseEntity<ReminderResponse> create(
             Authentication auth,
-            @Valid @RequestBody ReminderRequest request) {
+            @Valid @RequestBody ReminderRequestDto request) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.status(HttpStatus.CREATED).body(reminderUseCase.create(user, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(reminderUseCase.create(user, request.toModel()));
     }
 
     @GetMapping("/{id}")
@@ -60,7 +60,7 @@ public class ReminderController {
     public ResponseEntity<ReminderResponse> update(
             Authentication auth,
             @PathVariable Long id,
-            @Valid @RequestBody ReminderRequest request) {
+            @Valid @RequestBody ReminderRequestDto request) {
         User user = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(reminderUseCase.update(user, id, request));
     }

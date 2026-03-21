@@ -1,8 +1,9 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderRequest;
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponseDto;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequest;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequestDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponse;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
@@ -39,15 +40,15 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     @Override
     @Transactional
     public ReminderResponse create(User user, ReminderRequest request) {
-        Content content = contentRepository.findById(request.contentId())
+        Content content = contentRepository.findById(request.getContentId())
                 .orElseThrow(() -> AppException.notFound("Content not found"));
 
         Reminder reminder = Reminder.builder()
                 .user(user)
                 .content(content)
-                .scheduledAt(request.scheduledAt())
-                .recurrence(request.recurrence() != null ? request.recurrence() : Recurrence.ONCE)
-                .message(request.message())
+                .scheduledAt(request.getScheduledAt())
+                .recurrence(request.getRecurrence() != null ? request.getRecurrence() : Recurrence.ONCE)
+                .message(request.getMessage())
                 .status(ReminderStatus.PENDING)
                 .build();
 
@@ -63,7 +64,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     @Override
     @Transactional
-    public ReminderResponse update(User user, Long id, ReminderRequest request) {
+    public ReminderResponse update(User user, Long id, ReminderRequestDto request) {
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 

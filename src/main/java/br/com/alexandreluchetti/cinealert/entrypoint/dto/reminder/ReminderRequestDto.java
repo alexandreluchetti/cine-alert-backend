@@ -1,13 +1,14 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder;
 
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderRequest;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
-public record ReminderRequest(
+public record ReminderRequestDto (
     @NotNull(message = "Content ID is required")
     Long contentId,
 
@@ -19,4 +20,9 @@ public record ReminderRequest(
 
     @Size(max = 255, message = "Message must be at most 255 characters")
     String message
-) {}
+) {
+
+    public ReminderRequest toModel() {
+        return new ReminderRequest(contentId, scheduledAt, recurrence, message);
+    }
+}

@@ -1,6 +1,7 @@
 package br.com.alexandreluchetti.cinealert.core.usecase;
 
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequest;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderRequest;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequestDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponse;
 import br.com.alexandreluchetti.cinealert.core.model.User;
@@ -16,7 +17,7 @@ public interface ReminderUseCase {
 
     ReminderResponse getById(User user, Long id);
 
-    ReminderResponse update(User user, Long id, ReminderRequest request);
+    ReminderResponse update(User user, Long id, ReminderRequestDto request);
 
     void cancel(User user, Long id);
 
