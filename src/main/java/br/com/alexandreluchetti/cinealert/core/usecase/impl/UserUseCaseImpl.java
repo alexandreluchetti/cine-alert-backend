@@ -1,7 +1,7 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.user.UpdateUserRequest;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequest;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UserResponse;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.User;
@@ -37,11 +37,11 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     @Transactional
     public UserResponse updateProfile(User user, UpdateUserRequest request) {
-        if (request.name() != null && !request.name().isBlank()) {
-            user.setName(request.name());
+        if (request.getName() != null && !request.getName().isBlank()) {
+            user.setName(request.getName());
         }
-        if (request.password() != null && !request.password().isBlank()) {
-            user.setPassword(passwordEncoder.encode(request.password()));
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
         userRepository.save(user);
         return getProfile(user);

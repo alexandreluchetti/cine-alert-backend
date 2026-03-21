@@ -1,7 +1,7 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequest;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequestDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UserResponse;
 import br.com.alexandreluchetti.cinealert.core.model.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,9 +33,9 @@ public class UserController {
 
     @PutMapping("/me")
     @Operation(summary = "Update current user profile")
-    public ResponseEntity<UserResponse> updateMe(Authentication auth, @Valid @RequestBody UpdateUserRequest request) {
+    public ResponseEntity<UserResponse> updateMe(Authentication auth, @Valid @RequestBody UpdateUserRequestDto request) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(userUseCase.updateProfile(user, request));
+        return ResponseEntity.ok(userUseCase.updateProfile(user, request.toModel()));
     }
 
     @PutMapping("/me/avatar")
