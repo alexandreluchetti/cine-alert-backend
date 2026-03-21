@@ -49,7 +49,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
-    public AuthResponseDto login(LoginRequest request) {
+    public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> AppException.unauthorized("Invalid email or password"));
 
@@ -61,11 +61,11 @@ public class AuthUseCaseImpl implements AuthUseCase {
             throw AppException.forbidden("Account is deactivated");
         }
 
-        return buildAuthResponse(user);
+        return buildAuthResponseModel(user);
     }
 
     @Override
-    public AuthResponseDto refresh(RefreshRequest request) {
+    public AuthResponse refresh(RefreshRequest request) {
         String token = request.refreshToken();
 
         if (!jwtUtil.isTokenValid(token) || !jwtUtil.isRefreshToken(token)) {
@@ -76,7 +76,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> AppException.unauthorized("User not found"));
 
-        return buildAuthResponse(user);
+        return buildAuthResponseModel(user);
     }
 
     @Override
@@ -84,17 +84,6 @@ public class AuthUseCaseImpl implements AuthUseCase {
         // In a real app, send email with reset link
         // For now, log and return success (don't reveal if email exists)
         log.info("Password reset requested for: {}", request.email());
-    }
-
-    private AuthResponseDto buildAuthResponse(User user) {
-        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getId());
-        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
-
-        return AuthResponseDto.of(
-                accessToken,
-                refreshToken,
-                accessExpiration / 1000,
-                new UserInfoDto(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl()));
     }
 
     private AuthResponse buildAuthResponseModel(User user) {

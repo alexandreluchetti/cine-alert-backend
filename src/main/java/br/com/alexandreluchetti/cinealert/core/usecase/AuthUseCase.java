@@ -8,9 +8,9 @@ public interface AuthUseCase {
 
     AuthResponse register(RegisterRequest request);
 
-    AuthResponseDto login(LoginRequest request);
+    AuthResponse login(LoginRequest request);
 
-    AuthResponseDto refresh(RefreshRequest request);
+    AuthResponse refresh(RefreshRequest request);
 
     void forgotPassword(ForgotPasswordRequest request);
 }

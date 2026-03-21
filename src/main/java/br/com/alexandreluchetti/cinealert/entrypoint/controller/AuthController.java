@@ -31,13 +31,13 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Login and get JWT tokens")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authUseCase.login(request));
+        return ResponseEntity.ok(AuthResponseDto.fromModel(authUseCase.login(request)));
     }
 
     @PostMapping("/refresh")
     @Operation(summary = "Refresh access token using refresh token")
     public ResponseEntity<AuthResponseDto> refresh(@Valid @RequestBody RefreshRequest request) {
-        return ResponseEntity.ok(authUseCase.refresh(request));
+        return ResponseEntity.ok(AuthResponseDto.fromModel(authUseCase.refresh(request)));
     }
 
     @PostMapping("/logout")
