@@ -3,7 +3,6 @@ package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
 import br.com.alexandreluchetti.cinealert.core.model.auth.*;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.auth.*;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.User;
 import br.com.alexandreluchetti.cinealert.dataprovider.repository.UserRepository;
@@ -43,7 +42,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
 
         user = userRepository.save(user);
 
-        return buildAuthResponseModel(user);
+        return buildAuthResponse(user);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
             throw AppException.forbidden("Account is deactivated");
         }
 
-        return buildAuthResponseModel(user);
+        return buildAuthResponse(user);
     }
 
     @Override
@@ -74,17 +73,17 @@ public class AuthUseCaseImpl implements AuthUseCase {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> AppException.unauthorized("User not found"));
 
-        return buildAuthResponseModel(user);
+        return buildAuthResponse(user);
     }
 
     @Override
     public void forgotPassword(ForgotPasswordRequest request) {
         // In a real app, send email with reset link
         // For now, log and return success (don't reveal if email exists)
-        log.info("Password reset requested for: {}", request.email());
+        log.info("Password reset requested for: {}", request.getEmail());
     }
 
-    private AuthResponse buildAuthResponseModel(User user) {
+    private AuthResponse buildAuthResponse(User user) {
         String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getId());
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
 
