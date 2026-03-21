@@ -2,6 +2,7 @@ package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
 import br.com.alexandreluchetti.cinealert.core.model.auth.AuthResponse;
+import br.com.alexandreluchetti.cinealert.core.model.auth.LoginRequest;
 import br.com.alexandreluchetti.cinealert.core.model.auth.RegisterRequest;
 import br.com.alexandreluchetti.cinealert.core.model.auth.UserInfo;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
@@ -50,10 +51,10 @@ public class AuthUseCaseImpl implements AuthUseCase {
 
     @Override
     public AuthResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.email())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> AppException.unauthorized("Invalid email or password"));
 
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw AppException.unauthorized("Invalid email or password");
         }
 

@@ -30,8 +30,8 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Login and get JWT tokens")
-    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(AuthResponseDto.fromModel(authUseCase.login(request)));
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
+        return ResponseEntity.ok(AuthResponseDto.fromModel(authUseCase.login(request.toModel())));
     }
 
     @PostMapping("/refresh")
