@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.dataprovider.imdb;
+package br.com.alexandreluchetti.cinealert.core.model.enums;
 
 import lombok.Getter;
 
