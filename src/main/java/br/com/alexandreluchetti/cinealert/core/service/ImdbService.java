@@ -12,7 +12,7 @@ public interface ImdbService {
 
     Optional<ContentResponse> getDetail(String imdbId);
 
-    List<ContentResponseDto> getTrending();
+    List<ContentResponse> getTrending();
 
     List<String> getGenres();
 }

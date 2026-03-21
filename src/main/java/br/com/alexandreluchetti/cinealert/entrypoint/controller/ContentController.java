@@ -45,7 +45,11 @@ public class ContentController {
     @GetMapping("/trending")
     @Operation(summary = "Get trending movies")
     public ResponseEntity<List<ContentResponseDto>> getTrending() {
-        return ResponseEntity.ok(contentUseCase.getTrending());
+        return ResponseEntity.ok(
+                contentUseCase.getTrending().stream()
+                        .map(ContentResponseDto::fromModel)
+                        .toList()
+        );
     }
 
     @GetMapping("/genres")

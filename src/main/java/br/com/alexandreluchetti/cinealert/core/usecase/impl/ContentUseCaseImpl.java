@@ -56,7 +56,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
     }
 
     @Override
-    public List<ContentResponseDto> getTrending() {
+    public List<ContentResponse> getTrending() {
         return imdbService.getTrending();
     }
 

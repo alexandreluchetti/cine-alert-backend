@@ -14,7 +14,7 @@ public interface ContentUseCase {
 
     Content getOrCacheContent(Long contentId);
 
-    List<ContentResponseDto> getTrending();
+    List<ContentResponse> getTrending();
 
     List<String> getGenres();
 }

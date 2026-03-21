@@ -87,21 +87,21 @@ public class ImdbServiceImpl implements ImdbService {
     }
 
     @Override
-    public List<ContentResponseDto> getTrending() {
+    public List<ContentResponse> getTrending() {
         try {
             String url = baseUrl + "/title/get-top-rated-movies";
             ResponseEntity<String> response = restTemplate.exchange(
                     url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
 
             JsonNode root = mapper.readTree(response.getBody());
-            List<ContentResponseDto> items = new ArrayList<>();
+            List<ContentResponse> items = new ArrayList<>();
             if (root.isArray()) {
                 int count = 0;
                 for (JsonNode node : root) {
                     if (count++ >= 20)
                         break;
                     String id = node.path("id").asText("").replace("/title/", "").replace("/", "");
-                    ContentResponseDto content = new ContentResponseDto(
+                    ContentResponse content = new ContentResponse(
                             null, id,
                             node.path("title").asText("Unknown"),
                             ContentType.MOVIE,
