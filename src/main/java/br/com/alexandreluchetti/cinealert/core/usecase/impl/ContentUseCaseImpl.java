@@ -1,8 +1,9 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponseDto;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.Content;
 import br.com.alexandreluchetti.cinealert.dataprovider.repository.ContentRepository;
@@ -33,13 +34,13 @@ public class ContentUseCaseImpl implements ContentUseCase {
 
     @Override
     @Transactional
-    public ContentResponse getDetail(String imdbId) {
+    public ContentResponseDto getDetail(String imdbId) {
         Optional<Content> cached = contentRepository.findByImdbId(imdbId);
         if (cached.isPresent() && cached.get().getCachedAt().isAfter(LocalDateTime.now().minusHours(CACHE_HOURS))) {
             return toResponse(cached.get());
         }
 
-        ContentResponse response = imdbService.getDetail(imdbId)
+        ContentResponseDto response = imdbService.getDetail(imdbId)
                 .orElseThrow(() -> AppException.notFound("Content not found: " + imdbId));
 
         cacheContent(imdbId, response, cached.orElse(null));
@@ -55,7 +56,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
     }
 
     @Override
-    public List<ContentResponse> getTrending() {
+    public List<ContentResponseDto> getTrending() {
         return imdbService.getTrending();
     }
 
@@ -64,7 +65,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
         return imdbService.getGenres();
     }
 
-    private void cacheContent(String imdbId, ContentResponse response, Content existing) {
+    private void cacheContent(String imdbId, ContentResponseDto response, Content existing) {
         Content content = existing != null ? existing : Content.builder().imdbId(imdbId).build();
         content.setTitle(response.title());
         content.setType(response.type());
@@ -79,8 +80,8 @@ public class ContentUseCaseImpl implements ContentUseCase {
         contentRepository.save(content);
     }
 
-    private ContentResponse toResponse(Content c) {
-        return new ContentResponse(
+    private ContentResponseDto toResponse(Content c) {
+        return new ContentResponseDto(
                 c.getId(), c.getImdbId(), c.getTitle(), c.getType(),
                 c.getPosterUrl(), c.getYear(), c.getRating(),
                 c.getGenre(), c.getSynopsis(), c.getTrailerUrl(), c.getRuntimeMinutes());

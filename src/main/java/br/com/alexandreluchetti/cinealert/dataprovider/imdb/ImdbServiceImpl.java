@@ -1,6 +1,8 @@
 package br.com.alexandreluchetti.cinealert.dataprovider.imdb;
 
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.core.model.enums.GenreEnum;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponseDto;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -70,7 +72,7 @@ public class ImdbServiceImpl implements ImdbService {
     }
 
     @Override
-    public Optional<ContentResponse> getDetail(String imdbId) {
+    public Optional<ContentResponseDto> getDetail(String imdbId) {
         try {
             String url = baseUrl + "/title/get-overview-details?tconst=" + imdbId + "&currentCountry=BR";
             ResponseEntity<String> response = restTemplate.exchange(
@@ -85,21 +87,21 @@ public class ImdbServiceImpl implements ImdbService {
     }
 
     @Override
-    public List<ContentResponse> getTrending() {
+    public List<ContentResponseDto> getTrending() {
         try {
             String url = baseUrl + "/title/get-top-rated-movies";
             ResponseEntity<String> response = restTemplate.exchange(
                     url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
 
             JsonNode root = mapper.readTree(response.getBody());
-            List<ContentResponse> items = new ArrayList<>();
+            List<ContentResponseDto> items = new ArrayList<>();
             if (root.isArray()) {
                 int count = 0;
                 for (JsonNode node : root) {
                     if (count++ >= 20)
                         break;
                     String id = node.path("id").asText("").replace("/title/", "").replace("/", "");
-                    ContentResponse content = new ContentResponse(
+                    ContentResponseDto content = new ContentResponseDto(
                             null, id,
                             node.path("title").asText("Unknown"),
                             ContentType.MOVIE,
@@ -143,7 +145,7 @@ public class ImdbServiceImpl implements ImdbService {
                 node.path("runningTimeInMinutes").asInt(0) > 0 ? node.path("runningTimeInMinutes").asInt() : null);
     }
 
-    private ContentResponse mapDetailToContentResponse(String imdbId, JsonNode root) {
+    private ContentResponseDto mapDetailToContentResponse(String imdbId, JsonNode root) {
         JsonNode title = root.path("title");
         if (title.isMissingNode())
             return null;
@@ -154,7 +156,7 @@ public class ImdbServiceImpl implements ImdbService {
         JsonNode ratings = root.path("ratings");
         JsonNode plot = root.path("plotSummary");
 
-        return new ContentResponse(
+        return new ContentResponseDto(
                 null, imdbId,
                 title.path("title").asText("Unknown"),
                 type,

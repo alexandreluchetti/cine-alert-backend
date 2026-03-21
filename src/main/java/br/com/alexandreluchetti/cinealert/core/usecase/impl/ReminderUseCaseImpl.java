@@ -1,7 +1,7 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponseDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequest;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponse;
@@ -106,7 +106,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     private ReminderResponse toResponse(Reminder r) {
         Content c = r.getContent();
-        ContentResponse contentResp = new ContentResponse(
+        ContentResponseDto contentResp = new ContentResponseDto(
                 c.getId(), c.getImdbId(), c.getTitle(), c.getType(),
                 c.getPosterUrl(), c.getYear(), c.getRating(),
                 c.getGenre(), c.getSynopsis(), c.getTrailerUrl(), c.getRuntimeMinutes());
