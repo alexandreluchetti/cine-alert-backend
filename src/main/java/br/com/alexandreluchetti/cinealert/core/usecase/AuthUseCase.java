@@ -2,6 +2,7 @@ package br.com.alexandreluchetti.cinealert.core.usecase;
 
 import br.com.alexandreluchetti.cinealert.core.model.auth.AuthResponse;
 import br.com.alexandreluchetti.cinealert.core.model.auth.LoginRequest;
+import br.com.alexandreluchetti.cinealert.core.model.auth.RefreshRequest;
 import br.com.alexandreluchetti.cinealert.core.model.auth.RegisterRequest;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.auth.*;
 

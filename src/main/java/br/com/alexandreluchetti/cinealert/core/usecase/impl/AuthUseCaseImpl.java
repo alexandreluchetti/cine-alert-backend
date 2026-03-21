@@ -1,10 +1,7 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
-import br.com.alexandreluchetti.cinealert.core.model.auth.AuthResponse;
-import br.com.alexandreluchetti.cinealert.core.model.auth.LoginRequest;
-import br.com.alexandreluchetti.cinealert.core.model.auth.RegisterRequest;
-import br.com.alexandreluchetti.cinealert.core.model.auth.UserInfo;
+import br.com.alexandreluchetti.cinealert.core.model.auth.*;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.auth.*;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
@@ -67,7 +64,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
 
     @Override
     public AuthResponse refresh(RefreshRequest request) {
-        String token = request.refreshToken();
+        String token = request.getRefreshToken();
 
         if (!jwtUtil.isTokenValid(token) || !jwtUtil.isRefreshToken(token)) {
             throw AppException.unauthorized("Invalid or expired refresh token");
