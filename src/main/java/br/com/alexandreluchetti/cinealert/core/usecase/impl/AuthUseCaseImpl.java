@@ -1,6 +1,7 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
+import br.com.alexandreluchetti.cinealert.core.model.auth.RegisterRequest;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.auth.*;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
@@ -30,14 +31,14 @@ public class AuthUseCaseImpl implements AuthUseCase {
     @Override
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw AppException.conflict("Email already registered");
         }
 
         User user = User.builder()
-                .name(request.name())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
         user = userRepository.save(user);
