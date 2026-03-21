@@ -1,13 +1,13 @@
 package br.com.alexandreluchetti.cinealert.configuration.resources;
 
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
+import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import br.com.alexandreluchetti.cinealert.core.usecase.*;
 import br.com.alexandreluchetti.cinealert.core.usecase.impl.*;
 import br.com.alexandreluchetti.cinealert.dataprovider.imdb.ImdbServiceImpl;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.ContentRepository;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepositoryImpl;
+import br.com.alexandreluchetti.cinealert.dataprovider.repository.ContentRepositoryImpl;
 import br.com.alexandreluchetti.cinealert.dataprovider.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
