@@ -3,7 +3,7 @@ package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequestDto;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponseDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponseDto;
 import br.com.alexandreluchetti.cinealert.core.model.User;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
@@ -32,37 +32,45 @@ public class ReminderController {
 
     @GetMapping
     @Operation(summary = "List all reminders for the authenticated user")
-    public ResponseEntity<List<ReminderResponse>> getAll(
+    public ResponseEntity<List<ReminderResponseDto>> getAll(
             Authentication auth,
             @RequestParam(required = false) ReminderStatus status) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderUseCase.getReminders(user, status));
+        return ResponseEntity.ok(
+                reminderUseCase.getReminders(user, status).stream().map(ReminderResponseDto::fromModel).toList()
+        );
     }
 
     @PostMapping
     @Operation(summary = "Create a new reminder")
-    public ResponseEntity<ReminderResponse> create(
+    public ResponseEntity<ReminderResponseDto> create(
             Authentication auth,
             @Valid @RequestBody ReminderRequestDto request) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.status(HttpStatus.CREATED).body(reminderUseCase.create(user, request.toModel()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ReminderResponseDto.fromModel(reminderUseCase.create(user, request.toModel()))
+        );
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a specific reminder")
-    public ResponseEntity<ReminderResponse> getById(Authentication auth, @PathVariable Long id) {
+    public ResponseEntity<ReminderResponseDto> getById(Authentication auth, @PathVariable Long id) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderUseCase.getById(user, id));
+        return ResponseEntity.ok(
+                ReminderResponseDto.fromModel(reminderUseCase.getById(user, id))
+        );
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a reminder")
-    public ResponseEntity<ReminderResponse> update(
+    public ResponseEntity<ReminderResponseDto> update(
             Authentication auth,
             @PathVariable Long id,
             @Valid @RequestBody ReminderRequestDto request) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderUseCase.update(user, id, request.toModel()));
+        return ResponseEntity.ok(
+                ReminderResponseDto.fromModel(reminderUseCase.update(user, id, request.toModel()))
+        );
     }
 
     @DeleteMapping("/{id}")

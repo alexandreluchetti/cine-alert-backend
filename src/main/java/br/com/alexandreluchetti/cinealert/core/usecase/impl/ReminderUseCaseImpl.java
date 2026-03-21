@@ -1,10 +1,10 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderRequest;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderStatsResponse;
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponseDto;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.Content;
 import br.com.alexandreluchetti.cinealert.core.model.Reminder;
@@ -106,10 +106,11 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     private ReminderResponse toResponse(Reminder r) {
         Content c = r.getContent();
-        ContentResponseDto contentResp = new ContentResponseDto(
+        ContentResponse contentResp = new ContentResponse(
                 c.getId(), c.getImdbId(), c.getTitle(), c.getType(),
                 c.getPosterUrl(), c.getYear(), c.getRating(),
-                c.getGenre(), c.getSynopsis(), c.getTrailerUrl(), c.getRuntimeMinutes());
+                ContentResponse.fromString(c.getGenre()),
+                c.getSynopsis(), c.getTrailerUrl(), c.getRuntimeMinutes());
         return new ReminderResponse(
                 r.getId(), contentResp, r.getScheduledAt(),
                 r.getRecurrence(), r.getMessage(), r.getStatus(), r.getCreatedAt());
