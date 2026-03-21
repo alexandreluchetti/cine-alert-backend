@@ -1,56 +1,54 @@
 package br.com.alexandreluchetti.cinealert.core.model;
 
 import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Entity
-@Table(name = "contents")
+@Document(collection = "contents")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Content {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(name = "imdb_id", unique = true, nullable = false, length = 20)
+    @Indexed(unique = true)
+    @Field("imdb_id")
     private String imdbId;
 
-    @Column(nullable = false, length = 300)
+    @Field("title")
     private String title;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Field("type")
     private ContentType type;
 
-    @Column(name = "poster_url", length = 500)
+    @Field("poster_url")
     private String posterUrl;
 
+    @Field("year")
     private Integer year;
 
-    @Column(precision = 3, scale = 1)
+    @Field("rating")
     private BigDecimal rating;
 
-    @Column(length = 200)
+    @Field("genre")
     private String genre;
 
-    @Column(columnDefinition = "TEXT")
+    @Field("synopsis")
     private String synopsis;
 
-    @Column(name = "trailer_url", length = 500)
+    @Field("trailer_url")
     private String trailerUrl;
 
-    @Column(name = "runtime_minutes")
+    @Field("runtime_minutes")
     private Integer runtimeMinutes;
 
-    @Column(name = "cached_at")
     @Builder.Default
+    @Field("cached_at")
     private LocalDateTime cachedAt = LocalDateTime.now();
-
-    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Reminder> reminders;
 }

@@ -14,11 +14,11 @@ public interface ReminderUseCase {
 
     ReminderResponse create(User user, ReminderRequest request);
 
-    ReminderResponse getById(User user, Long id);
+    ReminderResponse getById(User user, String id);
 
-    ReminderResponse update(User user, Long id, ReminderRequest request);
+    ReminderResponse update(User user, String id, ReminderRequest request);
 
-    void cancel(User user, Long id);
+    void cancel(User user, String id);
 
     ReminderStatsResponse getStats(User user);
 }

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public class ReminderResponse {
 
-    private Long id;
+    private String id;
     private ContentResponse content;
     private LocalDateTime scheduleAt;
     private Recurrence recurrence;
@@ -16,7 +16,7 @@ public class ReminderResponse {
     private ReminderStatus status;
     private LocalDateTime createdAt;
 
-    public ReminderResponse(Long id, ContentResponse content, LocalDateTime scheduleAt, Recurrence recurrence, String message, ReminderStatus status, LocalDateTime createdAt) {
+    public ReminderResponse(String id, ContentResponse content, LocalDateTime scheduleAt, Recurrence recurrence, String message, ReminderStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.content = content;
         this.scheduleAt = scheduleAt;
@@ -26,7 +26,7 @@ public class ReminderResponse {
         this.createdAt = createdAt;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

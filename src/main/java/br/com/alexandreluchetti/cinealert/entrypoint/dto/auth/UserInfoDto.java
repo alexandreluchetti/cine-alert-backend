@@ -3,7 +3,7 @@ package br.com.alexandreluchetti.cinealert.entrypoint.dto.auth;
 import br.com.alexandreluchetti.cinealert.core.model.auth.UserInfo;
 
 public record UserInfoDto(
-        Long id,
+        String id,
         String name,
         String email,
         String avatarUrl

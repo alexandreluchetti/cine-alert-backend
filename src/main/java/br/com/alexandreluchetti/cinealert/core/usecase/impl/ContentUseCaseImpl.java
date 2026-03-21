@@ -1,13 +1,12 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.Content;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
-import br.com.alexandreluchetti.cinealert.core.model.Content;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +31,6 @@ public class ContentUseCaseImpl implements ContentUseCase {
     }
 
     @Override
-    @Transactional
     public ContentResponse getDetail(String imdbId) {
         Optional<Content> cached = contentRepository.findByImdbId(imdbId);
         if (cached.isPresent() && cached.get().getCachedAt().isAfter(LocalDateTime.now().minusHours(CACHE_HOURS))) {
@@ -48,8 +46,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
     }
 
     @Override
-    @Transactional
-    public Content getOrCacheContent(Long contentId) {
+    public Content getOrCacheContent(String contentId) {
         return contentRepository.findById(contentId)
                 .orElseThrow(() -> AppException.notFound("Content not found with id: " + contentId));
     }
@@ -61,12 +58,10 @@ public class ContentUseCaseImpl implements ContentUseCase {
         
         for (ContentResponse basic : basicTrending) {
             try {
-                // getDetail automatically checks DB cache before hitting IMDB API
                 ContentResponse detail = this.getDetail(basic.getImdbId());
                 detailedTrending.add(detail);
             } catch (Exception e) {
                 log.warn("Failed to fetch detailed info for trending ID {}: {}", basic.getImdbId(), e.getMessage());
-                // Fallback to basic if detail fetch fails
                 detailedTrending.add(basic);
             }
         }

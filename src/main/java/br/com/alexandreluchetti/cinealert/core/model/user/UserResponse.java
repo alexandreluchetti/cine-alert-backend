@@ -2,14 +2,14 @@ package br.com.alexandreluchetti.cinealert.core.model.user;
 
 public class UserResponse {
 
-    private Long id;
+    private String id;
     private String name;
     private String email;
     private String avatarUrl;
     private long totalReminders;
     private long sentReminders;
 
-    public UserResponse(Long id, String name, String email, String avatarUrl, long totalReminders, long sentReminders) {
+    public UserResponse(String id, String name, String email, String avatarUrl, long totalReminders, long sentReminders) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -18,7 +18,7 @@ public class UserResponse {
         this.sentReminders = sentReminders;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

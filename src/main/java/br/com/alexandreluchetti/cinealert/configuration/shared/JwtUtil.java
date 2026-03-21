@@ -29,15 +29,15 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateAccessToken(String email, Long userId) {
+    public String generateAccessToken(String email, String userId) {
         return buildToken(email, userId, accessExpiration, "access");
     }
 
-    public String generateRefreshToken(String email, Long userId) {
+    public String generateRefreshToken(String email, String userId) {
         return buildToken(email, userId, refreshExpiration, "refresh");
     }
 
-    private String buildToken(String email, Long userId, long expiration, String type) {
+    private String buildToken(String email, String userId, long expiration, String type) {
         return Jwts.builder()
             .subject(email)
             .claims(Map.of("userId", userId, "type", type))
@@ -51,10 +51,10 @@ public class JwtUtil {
         return parseClaims(token).getSubject();
     }
 
-    public Long extractUserId(String token) {
+    public String extractUserId(String token) {
         Object userId = parseClaims(token).get("userId");
-        if (userId instanceof Integer) return ((Integer) userId).longValue();
-        return (Long) userId;
+        if (userId == null) return null;
+        return userId.toString();
     }
 
     public boolean isTokenValid(String token) {

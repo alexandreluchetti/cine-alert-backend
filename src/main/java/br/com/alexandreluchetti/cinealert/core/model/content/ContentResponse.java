@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ContentResponse {
 
-    private Long id;
+    private String id;
     private String imdbId;
     private String title;
     private ContentType type;
@@ -23,7 +23,7 @@ public class ContentResponse {
     private Integer runtimeMinutes;
 
     public ContentResponse(
-            Long id,
+            String id,
             String imdbId,
             String title,
             ContentType type,
@@ -63,7 +63,7 @@ public class ContentResponse {
         return list;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

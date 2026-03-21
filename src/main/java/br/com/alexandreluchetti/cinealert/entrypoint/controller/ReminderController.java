@@ -54,7 +54,7 @@ public class ReminderController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a specific reminder")
-    public ResponseEntity<ReminderResponseDto> getById(Authentication auth, @PathVariable Long id) {
+    public ResponseEntity<ReminderResponseDto> getById(Authentication auth, @PathVariable String id) {
         User user = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(
                 ReminderResponseDto.fromModel(reminderUseCase.getById(user, id))
@@ -65,7 +65,7 @@ public class ReminderController {
     @Operation(summary = "Update a reminder")
     public ResponseEntity<ReminderResponseDto> update(
             Authentication auth,
-            @PathVariable Long id,
+            @PathVariable String id,
             @Valid @RequestBody ReminderRequestDto request) {
         User user = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(
@@ -75,7 +75,7 @@ public class ReminderController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Cancel a reminder")
-    public ResponseEntity<Map<String, String>> delete(Authentication auth, @PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> delete(Authentication auth, @PathVariable String id) {
         User user = userUseCase.getAuthenticatedUser(auth);
         reminderUseCase.cancel(user, id);
         return ResponseEntity.ok(Map.of("message", "Reminder cancelled successfully"));

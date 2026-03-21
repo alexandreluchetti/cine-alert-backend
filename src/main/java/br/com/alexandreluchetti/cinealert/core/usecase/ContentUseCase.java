@@ -11,7 +11,7 @@ public interface ContentUseCase {
 
     ContentResponse getDetail(String imdbId);
 
-    Content getOrCacheContent(Long contentId);
+    Content getOrCacheContent(String contentId);
 
     List<ContentResponse> getTrending();
 

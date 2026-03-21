@@ -9,7 +9,6 @@ import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.User;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 public class UserUseCaseImpl implements UserUseCase {
 
@@ -35,7 +34,6 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    @Transactional
     public UserResponse updateProfile(User user, UpdateUserRequest request) {
         if (request.getName() != null && !request.getName().isBlank()) {
             user.setName(request.getName());
@@ -48,7 +46,6 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    @Transactional
     public UserResponse updateAvatar(User user, String avatarUrl) {
         user.setAvatarUrl(avatarUrl);
         userRepository.save(user);
@@ -56,14 +53,12 @@ public class UserUseCaseImpl implements UserUseCase {
     }
 
     @Override
-    @Transactional
     public void updateFcmToken(User user, String fcmToken) {
         user.setFcmToken(fcmToken);
         userRepository.save(user);
     }
 
     @Override
-    @Transactional
     public void deleteAccount(User user) {
         user.setActive(false);
         userRepository.save(user);

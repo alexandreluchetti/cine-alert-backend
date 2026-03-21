@@ -10,16 +10,16 @@ import java.util.Optional;
 
 public interface ReminderRepository extends ReminderRepositoryImpl {
 
-    List<Reminder> findByUserIdOrderByScheduledAtAsc(Long userId);
+    List<Reminder> findByUserIdOrderByScheduledAtAsc(String userId);
 
-    List<Reminder> findByUserIdAndStatusOrderByScheduledAtAsc(Long userId, ReminderStatus status);
+    List<Reminder> findByUserIdAndStatusOrderByScheduledAtAsc(String userId, ReminderStatus status);
 
-    Optional<Reminder> findByIdAndUserId(Long id, Long userId);
+    Optional<Reminder> findByIdAndUserId(String id, String userId);
 
     // For the scheduler: find all PENDING reminders whose scheduled time has passed
     List<Reminder> findByStatusAndScheduledAtLessThanEqual(ReminderStatus status, LocalDateTime dateTime);
 
-    long countByUserIdAndStatus(Long userId, ReminderStatus status);
+    long countByUserIdAndStatus(String userId, ReminderStatus status);
 
-    long countByUserId(Long userId);
+    long countByUserId(String userId);
 }

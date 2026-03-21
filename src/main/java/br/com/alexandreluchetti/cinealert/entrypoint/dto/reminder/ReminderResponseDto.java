@@ -8,7 +8,7 @@ import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import java.time.LocalDateTime;
 
 public record ReminderResponseDto (
-    Long id,
+    String id,
     ContentResponseDto content,
     LocalDateTime scheduledAt,
     Recurrence recurrence,

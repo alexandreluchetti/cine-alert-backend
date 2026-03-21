@@ -3,7 +3,7 @@ package br.com.alexandreluchetti.cinealert.entrypoint.dto.user;
 import br.com.alexandreluchetti.cinealert.core.model.user.UserResponse;
 
 public record UserResponseDto (
-    Long id,
+    String id,
     String name,
     String email,
     String avatarUrl,

@@ -1,5 +1,10 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.Content;
+import br.com.alexandreluchetti.cinealert.core.model.Reminder;
+import br.com.alexandreluchetti.cinealert.core.model.User;
+import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
+import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderRequest;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderResponse;
@@ -8,12 +13,6 @@ import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
-import br.com.alexandreluchetti.cinealert.core.model.Content;
-import br.com.alexandreluchetti.cinealert.core.model.Reminder;
-import br.com.alexandreluchetti.cinealert.core.model.User;
-import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
-import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,14 +36,23 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     }
 
     @Override
-    @Transactional
     public ReminderResponse create(User user, ReminderRequest request) {
         Content content = contentRepository.findById(request.getContentId())
                 .orElseThrow(() -> AppException.notFound("Content not found"));
 
+        Reminder.ContentSnapshot snapshot = Reminder.ContentSnapshot.builder()
+                .imdbId(content.getImdbId())
+                .title(content.getTitle())
+                .type(content.getType())
+                .posterUrl(content.getPosterUrl())
+                .year(content.getYear())
+                .build();
+
         Reminder reminder = Reminder.builder()
-                .user(user)
-                .content(content)
+                .userId(user.getId())
+                .userFcmToken(user.getFcmToken())
+                .contentId(content.getId())
+                .contentSnapshot(snapshot)
                 .scheduledAt(request.getScheduledAt())
                 .recurrence(request.getRecurrence() != null ? request.getRecurrence() : Recurrence.ONCE)
                 .message(request.getMessage())
@@ -55,15 +63,14 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     }
 
     @Override
-    public ReminderResponse getById(User user, Long id) {
+    public ReminderResponse getById(User user, String id) {
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
         return toResponse(reminder);
     }
 
     @Override
-    @Transactional
-    public ReminderResponse update(User user, Long id, ReminderRequest request) {
+    public ReminderResponse update(User user, String id, ReminderRequest request) {
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 
@@ -82,8 +89,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     }
 
     @Override
-    @Transactional
-    public void cancel(User user, Long id) {
+    public void cancel(User user, String id) {
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 
@@ -105,12 +111,14 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     }
 
     private ReminderResponse toResponse(Reminder r) {
-        Content c = r.getContent();
+        Reminder.ContentSnapshot snap = r.getContentSnapshot();
         ContentResponse contentResp = new ContentResponse(
-                c.getId(), c.getImdbId(), c.getTitle(), c.getType(),
-                c.getPosterUrl(), c.getYear(), c.getRating(),
-                ContentResponse.fromString(c.getGenre()),
-                c.getSynopsis(), c.getTrailerUrl(), c.getRuntimeMinutes());
+                r.getContentId(), snap != null ? snap.getImdbId() : null,
+                snap != null ? snap.getTitle() : null,
+                snap != null ? snap.getType() : null,
+                snap != null ? snap.getPosterUrl() : null,
+                snap != null ? snap.getYear() : null,
+                null, java.util.Collections.emptyList(), null, null, null);
         return new ReminderResponse(
                 r.getId(), contentResp, r.getScheduledAt(),
                 r.getRecurrence(), r.getMessage(), r.getStatus(), r.getCreatedAt());

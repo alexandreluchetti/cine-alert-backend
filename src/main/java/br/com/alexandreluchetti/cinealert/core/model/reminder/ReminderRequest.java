@@ -6,19 +6,19 @@ import java.time.LocalDateTime;
 
 public class ReminderRequest {
 
-    private Long contentId;
+    private String contentId;
     private LocalDateTime scheduledAt;
     private Recurrence recurrence;
     private String message;
 
-    public ReminderRequest(Long contentId, LocalDateTime scheduledAt, Recurrence recurrence, String message) {
+    public ReminderRequest(String contentId, LocalDateTime scheduledAt, Recurrence recurrence, String message) {
         this.contentId = contentId;
         this.scheduledAt = scheduledAt;
         this.recurrence = recurrence;
         this.message = message;
     }
 
-    public Long getContentId() {
+    public String getContentId() {
         return contentId;
     }
 

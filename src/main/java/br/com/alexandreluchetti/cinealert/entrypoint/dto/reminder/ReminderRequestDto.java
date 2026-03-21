@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public record ReminderRequestDto (
     @NotNull(message = "Content ID is required")
-    Long contentId,
+    String contentId,
 
     @NotNull(message = "Scheduled time is required")
     @Future(message = "Scheduled time must be in the future")

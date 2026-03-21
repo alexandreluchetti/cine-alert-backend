@@ -6,7 +6,7 @@ import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import java.math.BigDecimal;
 
 public record ContentResponseDto (
-    Long id,
+    String id,
     String imdbId,
     String title,
     ContentType type,

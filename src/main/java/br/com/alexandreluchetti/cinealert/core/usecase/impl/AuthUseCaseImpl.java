@@ -9,7 +9,6 @@ import br.com.alexandreluchetti.cinealert.core.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 public class AuthUseCaseImpl implements AuthUseCase {
@@ -28,7 +27,6 @@ public class AuthUseCaseImpl implements AuthUseCase {
     private long accessExpiration;
 
     @Override
-    @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw AppException.conflict("Email already registered");
@@ -78,8 +76,6 @@ public class AuthUseCaseImpl implements AuthUseCase {
 
     @Override
     public void forgotPassword(ForgotPasswordRequest request) {
-        // In a real app, send email with reset link
-        // For now, log and return success (don't reveal if email exists)
         log.info("Password reset requested for: {}", request.getEmail());
     }
 

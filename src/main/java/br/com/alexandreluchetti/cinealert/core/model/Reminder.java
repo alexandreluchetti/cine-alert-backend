@@ -1,51 +1,66 @@
 package br.com.alexandreluchetti.cinealert.core.model;
 
+import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "reminders", indexes = {
-    @Index(name = "idx_scheduled", columnList = "scheduled_at, status")
-})
-@EntityListeners(AuditingEntityListener.class)
+@Document(collection = "reminders")
+@CompoundIndex(name = "idx_scheduled", def = "{'scheduled_at': 1, 'status': 1}")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Reminder {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Field("user_id")
+    private String userId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "content_id", nullable = false)
-    private Content content;
+    /** Denormalized: FCM token at reminder-creation time, for the scheduler. */
+    @Field("user_fcm_token")
+    private String userFcmToken;
 
-    @Column(name = "scheduled_at", nullable = false)
+    @Field("content_id")
+    private String contentId;
+
+    /** Denormalized snapshot of content data needed for notifications. */
+    @Field("content_snapshot")
+    private ContentSnapshot contentSnapshot;
+
+    @Field("scheduled_at")
     private LocalDateTime scheduledAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
     @Builder.Default
+    @Field("recurrence")
     private Recurrence recurrence = Recurrence.ONCE;
 
-    @Column(length = 255)
+    @Field("message")
     private String message;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 15)
     @Builder.Default
+    @Field("status")
     private ReminderStatus status = ReminderStatus.PENDING;
 
     @CreatedDate
-    @Column(name = "created_at", updatable = false)
+    @Field("created_at")
     private LocalDateTime createdAt;
+
+    // ──────────────────────────────────────────────────────────────────────
+    // Embedded content snapshot (avoids extra DB lookups in the scheduler)
+    // ──────────────────────────────────────────────────────────────────────
+    @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+    public static class ContentSnapshot {
+        private String imdbId;
+        private String title;
+        private ContentType type;
+        private String posterUrl;
+        private Integer year;
+    }
 }

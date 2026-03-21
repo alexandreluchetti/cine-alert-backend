@@ -8,7 +8,6 @@ import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +24,6 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
     }
 
     @Override
-    @Transactional
     @Scheduled(fixedDelay = 60000) // every 60 seconds
     public void processarLembretesPendentes() {
         List<Reminder> pendentes = reminderRepository
@@ -38,15 +36,13 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
 
         for (Reminder reminder : pendentes) {
             try {
-                String title = "🎬 " + reminder.getContent().getTitle();
+                Reminder.ContentSnapshot snap = reminder.getContentSnapshot();
+                String title = "🎬 " + (snap != null ? snap.getTitle() : "");
                 String body = reminder.getMessage() != null && !reminder.getMessage().isBlank()
                         ? reminder.getMessage()
                         : "Hora do seu lembrete de cinema!";
 
-                fcmUseCase.sendNotification(
-                        reminder.getUser().getFcmToken(),
-                        title,
-                        body);
+                fcmUseCase.sendNotification(reminder.getUserFcmToken(), title, body);
 
                 reminder.setStatus(ReminderStatus.SENT);
 
@@ -72,8 +68,10 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
             return;
 
         Reminder next = Reminder.builder()
-                .user(reminder.getUser())
-                .content(reminder.getContent())
+                .userId(reminder.getUserId())
+                .userFcmToken(reminder.getUserFcmToken())
+                .contentId(reminder.getContentId())
+                .contentSnapshot(reminder.getContentSnapshot())
                 .scheduledAt(nextTime)
                 .recurrence(reminder.getRecurrence())
                 .message(reminder.getMessage())
@@ -81,6 +79,7 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
                 .build();
 
         reminderRepository.save(next);
-        log.info("Scheduled next reminder for '{}' at {}", reminder.getContent().getTitle(), nextTime);
+        Reminder.ContentSnapshot snap = reminder.getContentSnapshot();
+        log.info("Scheduled next reminder for '{}' at {}", snap != null ? snap.getTitle() : "", nextTime);
     }
 }
