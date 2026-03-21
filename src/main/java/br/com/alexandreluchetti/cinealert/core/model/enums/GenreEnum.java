@@ -30,4 +30,13 @@ public enum GenreEnum {
         this.value = value;
     }
 
+    public static GenreEnum fromValue(String value) {
+        for (GenreEnum genre : GenreEnum.values()) {
+            if (genre.getValue().equalsIgnoreCase(value)) {
+                return genre;
+            }
+        }
+
+        return null;
+    }
 }

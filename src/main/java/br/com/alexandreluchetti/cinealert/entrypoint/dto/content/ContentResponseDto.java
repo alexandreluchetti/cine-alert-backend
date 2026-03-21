@@ -28,7 +28,7 @@ public record ContentResponseDto (
                 contentResponse.getPosterUrl(),
                 contentResponse.getYear(),
                 contentResponse.getRating(),
-                contentResponse.getGenre(),
+                contentResponse.getGenreString(),
                 contentResponse.getSynopsis(),
                 contentResponse.getTrailerUrl(),
                 contentResponse.getRuntimeMinutes()

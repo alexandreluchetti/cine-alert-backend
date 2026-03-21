@@ -3,7 +3,6 @@ package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponseDto;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.Content;
 import br.com.alexandreluchetti.cinealert.dataprovider.repository.ContentRepository;
@@ -72,7 +71,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
         content.setPosterUrl(response.getPosterUrl());
         content.setYear(response.getYear());
         content.setRating(response.getRating());
-        content.setGenre(response.getGenre());
+        content.setGenre(response.getGenreString());
         content.setSynopsis(response.getSynopsis());
         content.setTrailerUrl(response.getTrailerUrl());
         content.setRuntimeMinutes(response.getRuntimeMinutes());
@@ -84,6 +83,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
         return new ContentResponse(
                 c.getId(), c.getImdbId(), c.getTitle(), c.getType(),
                 c.getPosterUrl(), c.getYear(), c.getRating(),
-                c.getGenre(), c.getSynopsis(), c.getTrailerUrl(), c.getRuntimeMinutes());
+                ContentResponse.fromString(c.getGenre()),
+                c.getSynopsis(), c.getTrailerUrl(), c.getRuntimeMinutes());
     }
 }

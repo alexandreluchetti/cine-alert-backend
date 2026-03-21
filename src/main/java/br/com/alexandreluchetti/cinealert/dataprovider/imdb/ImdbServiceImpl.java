@@ -2,7 +2,6 @@ package br.com.alexandreluchetti.cinealert.dataprovider.imdb;
 
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.model.enums.GenreEnum;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponseDto;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -178,15 +177,18 @@ public class ImdbServiceImpl implements ImdbService {
         return url;
     }
 
-    private String extractGenres(JsonNode genresNode) {
+    private List<GenreEnum> extractGenres(JsonNode genresNode) {
         if (genresNode.isArray()) {
-            List<String> genres = new ArrayList<>();
+            List<GenreEnum> genres = new ArrayList<>();
             for (JsonNode g : genresNode) {
-                genres.add(g.asText());
+                GenreEnum genreEnum = GenreEnum.fromValue(g.asText());
+                if (genreEnum != null) {
+                    genres.add(genreEnum);
+                }
             }
-            return String.join(", ", genres);
+            return genres;
         }
-        return genresNode.asText(null);
+        return Collections.emptyList();
     }
 
     private ContentType mapType(String titleType) {
