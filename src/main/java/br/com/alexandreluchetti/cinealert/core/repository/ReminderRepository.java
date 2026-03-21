@@ -2,13 +2,16 @@ package br.com.alexandreluchetti.cinealert.core.repository;
 
 import br.com.alexandreluchetti.cinealert.core.model.Reminder;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepositoryImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface ReminderRepository extends ReminderRepositoryImpl {
+public interface ReminderRepository {
+
+    Optional<Reminder> findById(Long id);
+
+    Reminder save(Reminder reminder);
 
     List<Reminder> findByUserIdOrderByScheduledAtAsc(Long userId);
 

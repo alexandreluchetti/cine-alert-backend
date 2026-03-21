@@ -58,7 +58,7 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
             }
         }
 
-        reminderRepository.saveAll(pendentes);
+        pendentes.forEach(reminderRepository::save);
     }
 
     private void scheduleNext(Reminder reminder) {
