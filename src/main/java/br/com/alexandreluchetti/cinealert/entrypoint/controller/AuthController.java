@@ -22,19 +22,21 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequestDto request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authUseCase.register(request.toModel()));
+    public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(AuthResponseDto.fromModel(authUseCase.register(request.toModel())));
     }
 
     @PostMapping("/login")
     @Operation(summary = "Login and get JWT tokens")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authUseCase.login(request));
     }
 
     @PostMapping("/refresh")
     @Operation(summary = "Refresh access token using refresh token")
-    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshRequest request) {
+    public ResponseEntity<AuthResponseDto> refresh(@Valid @RequestBody RefreshRequest request) {
         return ResponseEntity.ok(authUseCase.refresh(request));
     }
 

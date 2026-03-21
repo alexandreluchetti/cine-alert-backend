@@ -1,7 +1,9 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
+import br.com.alexandreluchetti.cinealert.core.model.auth.AuthResponse;
 import br.com.alexandreluchetti.cinealert.core.model.auth.RegisterRequest;
+import br.com.alexandreluchetti.cinealert.core.model.auth.UserInfo;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.auth.*;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
@@ -43,11 +45,11 @@ public class AuthUseCaseImpl implements AuthUseCase {
 
         user = userRepository.save(user);
 
-        return buildAuthResponse(user);
+        return buildAuthResponseModel(user);
     }
 
     @Override
-    public AuthResponse login(LoginRequest request) {
+    public AuthResponseDto login(LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> AppException.unauthorized("Invalid email or password"));
 
@@ -63,7 +65,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
-    public AuthResponse refresh(RefreshRequest request) {
+    public AuthResponseDto refresh(RefreshRequest request) {
         String token = request.refreshToken();
 
         if (!jwtUtil.isTokenValid(token) || !jwtUtil.isRefreshToken(token)) {
@@ -84,7 +86,18 @@ public class AuthUseCaseImpl implements AuthUseCase {
         log.info("Password reset requested for: {}", request.email());
     }
 
-    private AuthResponse buildAuthResponse(User user) {
+    private AuthResponseDto buildAuthResponse(User user) {
+        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getId());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
+
+        return AuthResponseDto.of(
+                accessToken,
+                refreshToken,
+                accessExpiration / 1000,
+                new UserInfoDto(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl()));
+    }
+
+    private AuthResponse buildAuthResponseModel(User user) {
         String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getId());
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
 
@@ -92,6 +105,6 @@ public class AuthUseCaseImpl implements AuthUseCase {
                 accessToken,
                 refreshToken,
                 accessExpiration / 1000,
-                new AuthResponse.UserInfo(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl()));
+                new UserInfo(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl()));
     }
 }
