@@ -62,10 +62,10 @@ public class ContentUseCaseImpl implements ContentUseCase {
         for (ContentResponse basic : basicTrending) {
             try {
                 // getDetail automatically checks DB cache before hitting IMDB API
-                ContentResponse detail = this.getDetail(basic.imdbId());
+                ContentResponse detail = this.getDetail(basic.getImdbId());
                 detailedTrending.add(detail);
             } catch (Exception e) {
-                log.warn("Failed to fetch detailed info for trending ID {}: {}", basic.imdbId(), e.getMessage());
+                log.warn("Failed to fetch detailed info for trending ID {}: {}", basic.getImdbId(), e.getMessage());
                 // Fallback to basic if detail fetch fails
                 detailedTrending.add(basic);
             }
