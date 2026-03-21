@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ReminderRepository extends JpaRepository<Reminder, Long> {
+public interface ReminderRepositoryImpl extends JpaRepository<Reminder, Long> {
 
     List<Reminder> findByUserIdOrderByScheduledAtAsc(Long userId);
 

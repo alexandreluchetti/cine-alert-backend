@@ -4,6 +4,7 @@ import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderRequest;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderStatsResponse;
+import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.Content;
@@ -12,7 +13,6 @@ import br.com.alexandreluchetti.cinealert.core.model.User;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.dataprovider.repository.ContentRepository;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
