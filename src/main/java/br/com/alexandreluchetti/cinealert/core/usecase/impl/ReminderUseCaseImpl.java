@@ -13,7 +13,7 @@ import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderStatsRespo
 import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
-import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
+import br.com.alexandreluchetti.cinealert.core.exception.AppException;
 
 import java.util.List;
 

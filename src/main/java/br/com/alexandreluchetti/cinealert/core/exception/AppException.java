@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.configuration.exception;
+package br.com.alexandreluchetti.cinealert.core.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

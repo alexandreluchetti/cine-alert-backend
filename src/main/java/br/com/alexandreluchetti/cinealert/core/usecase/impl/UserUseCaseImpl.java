@@ -6,7 +6,7 @@ import br.com.alexandreluchetti.cinealert.core.model.user.UserResponse;
 import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.repository.UserRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
+import br.com.alexandreluchetti.cinealert.core.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;

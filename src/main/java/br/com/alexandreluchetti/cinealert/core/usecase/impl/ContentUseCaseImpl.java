@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
-import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
+import br.com.alexandreluchetti.cinealert.core.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.content.Content;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
