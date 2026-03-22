@@ -8,6 +8,7 @@ import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import br.com.alexandreluchetti.cinealert.core.usecase.*;
 import br.com.alexandreluchetti.cinealert.core.usecase.impl.*;
 import br.com.alexandreluchetti.cinealert.dataprovider.imdb.ImdbServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,13 +16,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class ResourcesConfiguration {
 
+    @Value("${app.jwt.access-expiration}")
+    private long accessExpiration;
+
     @Bean
     public AuthUseCase loadAuthUseCase(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtUtilImpl jwtUtilImpl
     ) {
-        return new AuthUseCaseImpl(userRepository, passwordEncoder, jwtUtilImpl);
+        return new AuthUseCaseImpl(userRepository, passwordEncoder, jwtUtilImpl, accessExpiration);
     }
 
     @Bean
