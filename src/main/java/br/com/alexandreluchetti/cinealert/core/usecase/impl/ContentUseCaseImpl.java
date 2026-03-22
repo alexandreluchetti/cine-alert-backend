@@ -6,14 +6,16 @@ import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 public class ContentUseCaseImpl implements ContentUseCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContentUseCaseImpl.class);
 
     private final ImdbService imdbService;
     private final ContentRepository contentRepository;
@@ -27,13 +29,19 @@ public class ContentUseCaseImpl implements ContentUseCase {
 
     @Override
     public List<ContentResponse> search(String query, String type, String genre, Integer year, Double minRating) {
-        return imdbService.search(query, type, genre, year, minRating);
+        LOGGER.info("Searching for contents with query {}, {}, {}, {}, {}", query, type, genre, year, minRating);
+        List<ContentResponse> contents = imdbService.search(query, type, genre, year, minRating);
+        LOGGER.info("Found {} contents", contents.size());
+        return contents;
     }
 
     @Override
     public ContentResponse getDetail(String imdbId) {
+        LOGGER.info("Getting details of imdb {}", imdbId);
+
         Optional<Content> cached = contentRepository.findByImdbId(imdbId);
         if (cached.isPresent() && cached.get().getCachedAt().isAfter(LocalDateTime.now().minusHours(CACHE_HOURS))) {
+            LOGGER.debug("Returning cached content for imdb {}", imdbId);
             return toResponse(cached.get());
         }
 
@@ -42,17 +50,21 @@ public class ContentUseCaseImpl implements ContentUseCase {
 
         cacheContent(imdbId, response, cached.orElse(null));
 
+        LOGGER.info("Returning cached content {}", response);
         return response;
     }
 
     @Override
     public Content getOrCacheContent(String contentId) {
+        LOGGER.info("Getting cached content {}", contentId);
         return contentRepository.findById(contentId)
                 .orElseThrow(() -> AppException.notFound("Content not found with id: " + contentId));
     }
 
     @Override
     public List<ContentResponse> getTrending() {
+        LOGGER.info("Getting trending");
+
         List<ContentResponse> basicTrending = imdbService.getTrending();
         List<ContentResponse> detailedTrending = new java.util.ArrayList<>();
         
@@ -61,11 +73,12 @@ public class ContentUseCaseImpl implements ContentUseCase {
                 ContentResponse detail = this.getDetail(basic.getImdbId());
                 detailedTrending.add(detail);
             } catch (Exception e) {
-                log.warn("Failed to fetch detailed info for trending ID {}: {}", basic.getImdbId(), e.getMessage());
+                LOGGER.warn("Failed to fetch detailed info for trending ID {}: {}", basic.getImdbId(), e.getMessage());
                 detailedTrending.add(basic);
             }
         }
-        
+
+        LOGGER.info("Found {} trending", detailedTrending.size());
         return detailedTrending;
     }
 
@@ -86,6 +99,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
         content.setTrailerUrl(response.getTrailerUrl());
         content.setRuntimeMinutes(response.getRuntimeMinutes());
         content.setCachedAt(LocalDateTime.now());
+        LOGGER.info("Cached content for imdb {}", imdbId);
         contentRepository.save(content);
     }
 
