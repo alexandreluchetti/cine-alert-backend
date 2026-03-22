@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
-import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequestDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UserResponseDto;
@@ -27,35 +27,35 @@ public class UserController {
     @GetMapping("/me")
     @Operation(summary = "Get current user profile")
     public ResponseEntity<UserResponseDto> getMe(Authentication auth) {
-        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
+        User user = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(
-                UserResponseDto.fromModel(userUseCase.getProfile(userEntity))
+                UserResponseDto.fromModel(userUseCase.getProfile(user))
         );
     }
 
     @PutMapping("/me")
     @Operation(summary = "Update current user profile")
     public ResponseEntity<UserResponseDto> updateMe(Authentication auth, @Valid @RequestBody UpdateUserRequestDto request) {
-        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
+        User user = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(
-                UserResponseDto.fromModel(userUseCase.updateProfile(userEntity, request.toModel()))
+                UserResponseDto.fromModel(userUseCase.updateProfile(user, request.toModel()))
         );
     }
 
     @PutMapping("/me/avatar")
     @Operation(summary = "Update avatar URL")
     public ResponseEntity<UserResponseDto> updateAvatar(Authentication auth, @RequestBody Map<String, String> body) {
-        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
+        User user = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(
-                UserResponseDto.fromModel(userUseCase.updateAvatar(userEntity, body.get("avatarUrl")))
+                UserResponseDto.fromModel(userUseCase.updateAvatar(user, body.get("avatarUrl")))
         );
     }
 
     @DeleteMapping("/me")
     @Operation(summary = "Deactivate account")
     public ResponseEntity<Map<String, String>> deleteMe(Authentication auth) {
-        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
-        userUseCase.deleteAccount(userEntity);
+        User user = userUseCase.getAuthenticatedUser(auth);
+        userUseCase.deleteAccount(user);
         return ResponseEntity.ok(Map.of("message", "Account deactivated successfully"));
     }
 }

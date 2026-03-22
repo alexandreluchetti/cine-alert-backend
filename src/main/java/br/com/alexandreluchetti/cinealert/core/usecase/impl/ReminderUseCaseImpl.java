@@ -1,8 +1,8 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.dataprovider.entity.ContentEntity;
 import br.com.alexandreluchetti.cinealert.dataprovider.entity.ReminderEntity;
-import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
@@ -27,16 +27,16 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     }
 
     @Override
-    public List<ReminderResponse> getReminders(UserEntity userEntity, ReminderStatus status) {
+    public List<ReminderResponse> getReminders(User user, ReminderStatus status) {
         List<ReminderEntity> reminderEntities = status != null
-                ? reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc(userEntity.getId(), status)
-                : reminderRepository.findByUserIdOrderByScheduledAtAsc(userEntity.getId());
+                ? reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc(user.getId(), status)
+                : reminderRepository.findByUserIdOrderByScheduledAtAsc(user.getId());
 
         return reminderEntities.stream().map(this::toResponse).toList();
     }
 
     @Override
-    public ReminderResponse create(UserEntity userEntity, ReminderRequest request) {
+    public ReminderResponse create(User user, ReminderRequest request) {
         ContentEntity contentEntity = contentRepository.findById(request.getContentId())
                 .orElseThrow(() -> AppException.notFound("Content not found"));
 
@@ -49,8 +49,8 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
                 .build();
 
         ReminderEntity reminderEntity = ReminderEntity.builder()
-                .userId(userEntity.getId())
-                .userFcmToken(userEntity.getFcmToken())
+                .userId(user.getId())
+                .userFcmToken(user.getFcmToken())
                 .contentId(contentEntity.getId())
                 .contentSnapshot(snapshot)
                 .scheduledAt(request.getScheduledAt())
@@ -63,15 +63,15 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     }
 
     @Override
-    public ReminderResponse getById(UserEntity userEntity, String id) {
-        ReminderEntity reminderEntity = reminderRepository.findByIdAndUserId(id, userEntity.getId())
+    public ReminderResponse getById(User user, String id) {
+        ReminderEntity reminderEntity = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
         return toResponse(reminderEntity);
     }
 
     @Override
-    public ReminderResponse update(UserEntity userEntity, String id, ReminderRequest request) {
-        ReminderEntity reminderEntity = reminderRepository.findByIdAndUserId(id, userEntity.getId())
+    public ReminderResponse update(User user, String id, ReminderRequest request) {
+        ReminderEntity reminderEntity = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 
         if (reminderEntity.getStatus() == ReminderStatus.SENT) {
@@ -89,8 +89,8 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     }
 
     @Override
-    public void cancel(UserEntity userEntity, String id) {
-        ReminderEntity reminderEntity = reminderRepository.findByIdAndUserId(id, userEntity.getId())
+    public void cancel(User user, String id) {
+        ReminderEntity reminderEntity = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 
         if (reminderEntity.getStatus() == ReminderStatus.SENT) {
@@ -102,11 +102,11 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     }
 
     @Override
-    public ReminderStatsResponse getStats(UserEntity userEntity) {
-        long total = reminderRepository.countByUserId(userEntity.getId());
-        long pending = reminderRepository.countByUserIdAndStatus(userEntity.getId(), ReminderStatus.PENDING);
-        long sent = reminderRepository.countByUserIdAndStatus(userEntity.getId(), ReminderStatus.SENT);
-        long cancelled = reminderRepository.countByUserIdAndStatus(userEntity.getId(), ReminderStatus.CANCELLED);
+    public ReminderStatsResponse getStats(User user) {
+        long total = reminderRepository.countByUserId(user.getId());
+        long pending = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.PENDING);
+        long sent = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.SENT);
+        long cancelled = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.CANCELLED);
         return new ReminderStatsResponse(total, pending, sent, cancelled);
     }
 

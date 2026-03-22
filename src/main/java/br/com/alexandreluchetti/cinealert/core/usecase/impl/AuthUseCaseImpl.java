@@ -2,6 +2,7 @@ package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
 import br.com.alexandreluchetti.cinealert.core.model.auth.*;
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.repository.UserRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
@@ -32,31 +33,31 @@ public class AuthUseCaseImpl implements AuthUseCase {
             throw AppException.conflict("Email already registered");
         }
 
-        UserEntity userEntity = UserEntity.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
+        User user = User.register(
+                request.getName(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword())
+        );
 
-        userEntity = userRepository.save(userEntity);
+        user = userRepository.save(user);
 
-        return buildAuthResponse(userEntity);
+        return buildAuthResponse(user);
     }
 
     @Override
     public AuthResponse login(LoginRequest request) {
-        UserEntity userEntity = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> AppException.unauthorized("Invalid email or password"));
 
-        if (!passwordEncoder.matches(request.getPassword(), userEntity.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw AppException.unauthorized("Invalid email or password");
         }
 
-        if (!userEntity.isActive()) {
+        if (!user.isActive()) {
             throw AppException.forbidden("Account is deactivated");
         }
 
-        return buildAuthResponse(userEntity);
+        return buildAuthResponse(user);
     }
 
     @Override
@@ -68,10 +69,10 @@ public class AuthUseCaseImpl implements AuthUseCase {
         }
 
         String email = jwtUtil.extractEmail(token);
-        UserEntity userEntity = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> AppException.unauthorized("User not found"));
 
-        return buildAuthResponse(userEntity);
+        return buildAuthResponse(user);
     }
 
     @Override
@@ -79,14 +80,14 @@ public class AuthUseCaseImpl implements AuthUseCase {
         log.info("Password reset requested for: {}", request.getEmail());
     }
 
-    private AuthResponse buildAuthResponse(UserEntity userEntity) {
-        String accessToken = jwtUtil.generateAccessToken(userEntity.getEmail(), userEntity.getId());
-        String refreshToken = jwtUtil.generateRefreshToken(userEntity.getEmail(), userEntity.getId());
+    private AuthResponse buildAuthResponse(User user) {
+        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getId());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
 
         return AuthResponse.of(
                 accessToken,
                 refreshToken,
                 accessExpiration / 1000,
-                new UserInfo(userEntity.getId(), userEntity.getName(), userEntity.getEmail(), userEntity.getAvatarUrl()));
+                new UserInfo(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl()));
     }
 }

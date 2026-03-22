@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase;
 
-import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderRequest;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderStatsResponse;
@@ -10,15 +10,15 @@ import java.util.List;
 
 public interface ReminderUseCase {
 
-    List<ReminderResponse> getReminders(UserEntity userEntity, ReminderStatus status);
+    List<ReminderResponse> getReminders(User user, ReminderStatus status);
 
-    ReminderResponse create(UserEntity userEntity, ReminderRequest request);
+    ReminderResponse create(User user, ReminderRequest request);
 
-    ReminderResponse getById(UserEntity userEntity, String id);
+    ReminderResponse getById(User user, String id);
 
-    ReminderResponse update(UserEntity userEntity, String id, ReminderRequest request);
+    ReminderResponse update(User user, String id, ReminderRequest request);
 
-    void cancel(UserEntity userEntity, String id);
+    void cancel(User user, String id);
 
-    ReminderStatsResponse getStats(UserEntity userEntity);
+    ReminderStatsResponse getStats(User user);
 }

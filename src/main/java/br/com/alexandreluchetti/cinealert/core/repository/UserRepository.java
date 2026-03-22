@@ -1,14 +1,15 @@
 package br.com.alexandreluchetti.cinealert.core.repository;
 
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
 
 import java.util.Optional;
 
 public interface UserRepository {
 
-    Optional<UserEntity> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
 
-    UserEntity save(UserEntity userEntity);
+    User save(User user);
 }

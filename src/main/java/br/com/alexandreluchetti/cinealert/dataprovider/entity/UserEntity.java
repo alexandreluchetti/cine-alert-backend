@@ -1,5 +1,6 @@
 package br.com.alexandreluchetti.cinealert.dataprovider.entity;
 
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -48,4 +49,22 @@ public class UserEntity {
     @LastModifiedDate
     @Field("updated_at")
     private LocalDateTime updatedAt;
+
+    public static UserEntity fromModel(User user) {
+        return new UserEntity(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getAvatarUrl(),
+                user.getFcmToken(),
+                user.isActive(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
+        );
+    }
+
+    public User toModel() {
+        return new User(id, name, email, password, avatarUrl, fcmToken, active, createdAt, updatedAt);
+    }
 }
