@@ -1,24 +1,27 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class FcmUseCaseImpl implements FcmUseCase {
 
-    @Value("${app.firebase.enabled:false}")
-    private boolean firebaseEnabled;
+    private static final Logger LOGGER = LoggerFactory.getLogger(FcmUseCaseImpl.class);
+
+    private final boolean firebaseEnabled;
+
+    public FcmUseCaseImpl(boolean firebaseEnabled) {
+        this.firebaseEnabled = firebaseEnabled;
+    }
 
     public void sendNotification(String fcmToken, String title, String body) {
         if (!firebaseEnabled) {
-            log.info("[FCM DISABLED] Would send to token={} | title='{}' | body='{}'", fcmToken, title, body);
+            LOGGER.info("[FCM DISABLED] Would send to token={} | title='{}' | body='{}'", fcmToken, title, body);
             return;
         }
 
         if (fcmToken == null || fcmToken.isBlank()) {
-            log.warn("FCM token is null or blank, skipping notification for '{}'", title);
+            LOGGER.warn("FCM token is null or blank, skipping notification for '{}'", title);
             return;
         }
 
@@ -34,9 +37,9 @@ public class FcmUseCaseImpl implements FcmUseCase {
                     .build();
 
             String response = com.google.firebase.messaging.FirebaseMessaging.getInstance().send(message);
-            log.info("FCM notification sent successfully: {}", response);
+            LOGGER.info("FCM notification sent successfully: {}", response);
         } catch (Exception e) {
-            log.error("Error sending FCM notification to token {}: {}", fcmToken, e.getMessage());
+            LOGGER.error("Error sending FCM notification to token {}: {}", fcmToken, e.getMessage());
         }
     }
 }

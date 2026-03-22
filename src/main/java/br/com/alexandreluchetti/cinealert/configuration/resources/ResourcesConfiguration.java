@@ -19,6 +19,9 @@ public class ResourcesConfiguration {
     @Value("${app.jwt.access-expiration}")
     private long accessExpiration;
 
+    @Value("${app.firebase.enabled:false}")
+    private boolean firebaseEnabled;
+
     @Bean
     public AuthUseCase loadAuthUseCase(
             UserRepository userRepository,
@@ -38,7 +41,7 @@ public class ResourcesConfiguration {
 
     @Bean
     public FcmUseCase loadFcmUseCase() {
-        return new FcmUseCaseImpl();
+        return new FcmUseCaseImpl(firebaseEnabled);
     }
 
     @Bean
