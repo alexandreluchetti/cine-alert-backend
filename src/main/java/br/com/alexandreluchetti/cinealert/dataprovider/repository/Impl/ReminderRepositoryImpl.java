@@ -1,6 +1,7 @@
 package br.com.alexandreluchetti.cinealert.dataprovider.repository.Impl;
 
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.Reminder;
 import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.dataprovider.entity.ReminderEntity;
 import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderMongoRepository;
@@ -20,23 +21,26 @@ public class ReminderRepositoryImpl implements ReminderRepository {
     }
 
     @Override
-    public List<ReminderEntity> findByUserIdOrderByScheduledAtAsc(String userId) {
-        return reminderMongoRepository.findByUserIdOrderByScheduledAtAsc(userId);
+    public List<Reminder> findByUserIdOrderByScheduledAtAsc(String userId) {
+        return reminderMongoRepository.findByUserIdOrderByScheduledAtAsc(userId).stream()
+                .map(ReminderEntity::toModel).toList();
     }
 
     @Override
-    public List<ReminderEntity> findByUserIdAndStatusOrderByScheduledAtAsc(String userId, ReminderStatus status) {
-        return reminderMongoRepository.findByUserIdAndStatusOrderByScheduledAtAsc(userId, status);
+    public List<Reminder> findByUserIdAndStatusOrderByScheduledAtAsc(String userId, ReminderStatus status) {
+        return reminderMongoRepository.findByUserIdAndStatusOrderByScheduledAtAsc(userId, status).stream()
+                .map(ReminderEntity::toModel).toList();
     }
 
     @Override
-    public Optional<ReminderEntity> findByIdAndUserId(String id, String userId) {
-        return reminderMongoRepository.findByIdAndUserId(id, userId);
+    public Optional<Reminder> findByIdAndUserId(String id, String userId) {
+        return reminderMongoRepository.findByIdAndUserId(id, userId).map(ReminderEntity::toModel);
     }
 
     @Override
-    public List<ReminderEntity> findByStatusAndScheduledAtLessThanEqual(ReminderStatus status, LocalDateTime dateTime) {
-        return reminderMongoRepository.findByStatusAndScheduledAtLessThanEqual(status, dateTime);
+    public List<Reminder> findByStatusAndScheduledAtLessThanEqual(ReminderStatus status, LocalDateTime dateTime) {
+        return reminderMongoRepository.findByStatusAndScheduledAtLessThanEqual(status, dateTime).stream()
+                .map(ReminderEntity::toModel).toList();
     }
 
     @Override
@@ -50,12 +54,14 @@ public class ReminderRepositoryImpl implements ReminderRepository {
     }
 
     @Override
-    public List<ReminderEntity> saveAll(List<ReminderEntity> pendentes) {
-        return reminderMongoRepository.saveAll(pendentes);
+    public List<Reminder> saveAll(List<Reminder> pendentes) {
+        return reminderMongoRepository.saveAll(
+                pendentes.stream().map(ReminderEntity::fromModel).toList()
+        ).stream().map(ReminderEntity::toModel).toList();
     }
 
     @Override
-    public ReminderEntity save(ReminderEntity next) {
-        return reminderMongoRepository.save(next);
+    public Reminder save(Reminder next) {
+        return reminderMongoRepository.save(ReminderEntity.fromModel(next)).toModel();
     }
 }
