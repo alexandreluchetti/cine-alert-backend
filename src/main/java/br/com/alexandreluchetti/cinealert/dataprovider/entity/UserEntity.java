@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.core.model;
+package br.com.alexandreluchetti.cinealert.dataprovider.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

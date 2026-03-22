@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
-import br.com.alexandreluchetti.cinealert.core.model.UserEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.notification.FcmTokenRequestDto;
 import io.swagger.v3.oas.annotations.Operation;

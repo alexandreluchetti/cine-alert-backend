@@ -5,7 +5,7 @@ import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequestDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponseDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponseDto;
-import br.com.alexandreluchetti.cinealert.core.model.UserEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

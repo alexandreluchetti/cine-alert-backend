@@ -1,4 +1,4 @@
-package br.com.alexandreluchetti.cinealert.core.model;
+package br.com.alexandreluchetti.cinealert.dataprovider.entity;
 
 import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;

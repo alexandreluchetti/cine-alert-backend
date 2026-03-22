@@ -8,7 +8,6 @@ import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import br.com.alexandreluchetti.cinealert.core.usecase.*;
 import br.com.alexandreluchetti.cinealert.core.usecase.impl.*;
 import br.com.alexandreluchetti.cinealert.dataprovider.imdb.ImdbServiceImpl;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.UserRepositoryImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;

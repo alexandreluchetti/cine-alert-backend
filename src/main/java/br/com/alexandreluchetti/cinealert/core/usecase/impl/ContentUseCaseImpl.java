@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
-import br.com.alexandreluchetti.cinealert.core.model.ContentEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.ContentEntity;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;

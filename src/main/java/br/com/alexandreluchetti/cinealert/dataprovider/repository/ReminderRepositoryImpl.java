@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.dataprovider.repository;
 
-import br.com.alexandreluchetti.cinealert.core.model.ReminderEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.ReminderEntity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

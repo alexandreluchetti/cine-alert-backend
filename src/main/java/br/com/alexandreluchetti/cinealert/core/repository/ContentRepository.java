@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.repository;
 
-import br.com.alexandreluchetti.cinealert.core.model.ContentEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.ContentEntity;
 import br.com.alexandreluchetti.cinealert.dataprovider.repository.ContentRepositoryImpl;
 
 import java.util.Optional;

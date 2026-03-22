@@ -1,8 +1,8 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
-import br.com.alexandreluchetti.cinealert.core.model.ContentEntity;
-import br.com.alexandreluchetti.cinealert.core.model.ReminderEntity;
-import br.com.alexandreluchetti.cinealert.core.model.UserEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.ContentEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.ReminderEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;

@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
-import br.com.alexandreluchetti.cinealert.core.model.UserEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequestDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UserResponseDto;

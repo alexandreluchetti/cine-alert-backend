@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
-import br.com.alexandreluchetti.cinealert.core.model.ReminderEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.ReminderEntity;
 import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.NotificationSchedulerUseCase;

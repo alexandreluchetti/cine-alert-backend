@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase;
 
-import br.com.alexandreluchetti.cinealert.core.model.UserEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderRequest;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderResponse;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderStatsResponse;

@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.dataprovider.repository;
 
-import br.com.alexandreluchetti.cinealert.core.model.ContentEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.ContentEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
