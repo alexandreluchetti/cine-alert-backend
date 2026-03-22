@@ -14,10 +14,14 @@ import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.core.exception.AppException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ReminderUseCaseImpl implements ReminderUseCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReminderUseCaseImpl.class);
 
     private final ReminderRepository reminderRepository;
     private final ContentRepository contentRepository;
@@ -29,15 +33,20 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     @Override
     public List<ReminderResponse> getReminders(User user, ReminderStatus status) {
+        LOGGER.info("Fetching reminders for {} and status {}", user, status);
+
         List<Reminder> reminderEntities = status != null
                 ? reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc(user.getId(), status)
                 : reminderRepository.findByUserIdOrderByScheduledAtAsc(user.getId());
 
+        LOGGER.info("Found {} reminders", reminderEntities.size());
         return reminderEntities.stream().map(this::toResponse).toList();
     }
 
     @Override
     public ReminderResponse create(User user, ReminderRequest request) {
+        LOGGER.info("Creating reminder for {}", request);
+
         Content content = contentRepository.findById(request.getContentId())
                 .orElseThrow(() -> AppException.notFound("Content not found"));
 
@@ -62,24 +71,29 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
                 null
         );
 
+        LOGGER.info("Creating reminder for {}", reminder);
         return toResponse(reminderRepository.save(reminder));
     }
 
     @Override
     public ReminderResponse getById(User user, String id) {
+        LOGGER.info("Fetching reminder for {}", id);
+
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
+
+        LOGGER.info("Found reminder {}", reminder);
         return toResponse(reminder);
     }
 
     @Override
     public ReminderResponse update(User user, String id, ReminderRequest request) {
+        LOGGER.info("Updating reminder for {}", id);
+
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 
-        if (reminder.getStatus() == ReminderStatus.SENT) {
-            throw AppException.badRequest("Cannot update an already sent reminder");
-        }
+        checkReminderStatus(reminder);
 
         if (request.getScheduledAt() != null)
             reminder.setScheduledAt(request.getScheduledAt());
@@ -88,29 +102,42 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
         if (request.getMessage() != null)
             reminder.setMessage(request.getMessage());
 
+        LOGGER.info("Updating reminder for {}", reminder);
         return toResponse(reminderRepository.save(reminder));
     }
 
     @Override
     public void cancel(User user, String id) {
+        LOGGER.info("Cancelling reminder for {}", id);
+
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 
-        if (reminder.getStatus() == ReminderStatus.SENT) {
-            throw AppException.badRequest("Cannot cancel an already sent reminder");
-        }
+        checkReminderStatus(reminder);
 
         reminder.setStatus(ReminderStatus.CANCELLED);
+        LOGGER.info("Cancelling reminder for {}", reminder);
         reminderRepository.save(reminder);
+    }
+
+    private static void checkReminderStatus(Reminder reminder) {
+        if (reminder.getStatus() == ReminderStatus.SENT) {
+            LOGGER.warn("Reminder {} is already sent", reminder);
+            throw AppException.badRequest("Cannot cancel/update an already sent reminder");
+        }
     }
 
     @Override
     public ReminderStatsResponse getStats(User user) {
+        LOGGER.info("Fetching stats for {}", user);
+
         long total = reminderRepository.countByUserId(user.getId());
         long pending = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.PENDING);
         long sent = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.SENT);
         long cancelled = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.CANCELLED);
-        return new ReminderStatsResponse(total, pending, sent, cancelled);
+        ReminderStatsResponse reminderStatsResponse = new ReminderStatsResponse(total, pending, sent, cancelled);
+        LOGGER.info("Fetching stats for {}", reminderStatsResponse);
+        return reminderStatsResponse;
     }
 
     private ReminderResponse toResponse(Reminder r) {
