@@ -1,5 +1,6 @@
 package br.com.alexandreluchetti.cinealert.dataprovider.entity;
 
+import br.com.alexandreluchetti.cinealert.core.model.content.Content;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -55,4 +56,38 @@ public class ContentEntity {
     @Builder.Default
     @Field("cached_at")
     private LocalDateTime cachedAt = LocalDateTime.now();
+
+    public static ContentEntity fromModel(Content content) {
+        return new ContentEntity(
+                content.getId(),
+                content.getImdbId(),
+                content.getTitle(),
+                content.getType(),
+                content.getPosterUrl(),
+                content.getYear(),
+                content.getRating(),
+                content.getGenre(),
+                content.getSynopsis(),
+                content.getTrailerUrl(),
+                content.getRuntimeMinutes(),
+                content.getCachedAt()
+        );
+    }
+
+    public Content toModel() {
+        return new Content(
+                id,
+                imdbId,
+                title,
+                type,
+                posterUrl,
+                year,
+                rating,
+                genre,
+                synopsis,
+                trailerUrl,
+                runtimeMinutes,
+                cachedAt
+        );
+    }
 }
