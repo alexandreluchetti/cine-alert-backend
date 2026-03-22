@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.configuration.resources;
 
-import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
+import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtilImpl;
 import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.repository.UserRepository;
@@ -19,9 +19,9 @@ public class ResourcesConfiguration {
     public AuthUseCase loadAuthUseCase(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            JwtUtil jwtUtil
+            JwtUtilImpl jwtUtilImpl
     ) {
-        return new AuthUseCaseImpl(userRepository, passwordEncoder, jwtUtil);
+        return new AuthUseCaseImpl(userRepository, passwordEncoder, jwtUtilImpl);
     }
 
     @Bean

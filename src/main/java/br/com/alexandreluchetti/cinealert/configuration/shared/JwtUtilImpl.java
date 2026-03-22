@@ -1,5 +1,6 @@
 package br.com.alexandreluchetti.cinealert.configuration.shared;
 
+import br.com.alexandreluchetti.cinealert.core.usecase.JwtUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -11,7 +12,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Component
-public class JwtUtil {
+public class JwtUtilImpl implements JwtUtil {
 
     @Value("${app.jwt.secret}")
     private String jwtSecret;
@@ -29,10 +30,12 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    @Override
     public String generateAccessToken(String email, String userId) {
         return buildToken(email, userId, accessExpiration, "access");
     }
 
+    @Override
     public String generateRefreshToken(String email, String userId) {
         return buildToken(email, userId, refreshExpiration, "refresh");
     }
@@ -47,16 +50,19 @@ public class JwtUtil {
             .compact();
     }
 
+    @Override
     public String extractEmail(String token) {
         return parseClaims(token).getSubject();
     }
 
+    @Override
     public String extractUserId(String token) {
         Object userId = parseClaims(token).get("userId");
         if (userId == null) return null;
         return userId.toString();
     }
 
+    @Override
     public boolean isTokenValid(String token) {
         try {
             parseClaims(token);
@@ -66,6 +72,7 @@ public class JwtUtil {
         }
     }
 
+    @Override
     public boolean isRefreshToken(String token) {
         try {
             String type = (String) parseClaims(token).get("type");

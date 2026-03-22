@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final JwtUtilImpl jwtUtilImpl;
     private final UserRepository userRepository;
 
     @Override
@@ -39,12 +39,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        if (!jwtUtil.isTokenValid(token) || jwtUtil.isRefreshToken(token)) {
+        if (!jwtUtilImpl.isTokenValid(token) || jwtUtilImpl.isRefreshToken(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String email = jwtUtil.extractEmail(token);
+        String email = jwtUtilImpl.extractEmail(token);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             userRepository.findByEmail(email).ifPresent(user -> {
