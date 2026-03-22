@@ -7,14 +7,16 @@ import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.NotificationSchedulerUseCase;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
 public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUseCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationSchedulerUseCaseImpl.class);
 
     private final ReminderRepository reminderRepository;
     private final FcmUseCase fcmUseCase;
@@ -33,7 +35,7 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
         if (pendentes.isEmpty())
             return;
 
-        log.info("Processing {} pending reminder(s)...", pendentes.size());
+        LOGGER.info("Processing {} pending reminder(s)...", pendentes.size());
 
         for (Reminder reminder : pendentes) {
             try {
@@ -51,7 +53,7 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
                     scheduleNext(reminder);
                 }
             } catch (Exception e) {
-                log.error("Error processing reminder id={}: {}", reminder.getId(), e.getMessage());
+                LOGGER.error("Error processing reminder id={}: {}", reminder.getId(), e.getMessage());
             }
         }
 
@@ -83,6 +85,6 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
 
         reminderRepository.save(next);
         ContentSnapshot snap = reminder.getContentSnapshot();
-        log.info("Scheduled next reminder for '{}' at {}", snap != null ? snap.getTitle() : "", nextTime);
+        LOGGER.info("Scheduled next reminder for '{}' at {}", snap != null ? snap.getTitle() : "", nextTime);
     }
 }
