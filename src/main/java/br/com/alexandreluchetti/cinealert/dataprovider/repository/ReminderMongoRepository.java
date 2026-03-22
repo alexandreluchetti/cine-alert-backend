@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ReminderRepositoryImpl extends MongoRepository<ReminderEntity, String> {
+public interface ReminderMongoRepository extends MongoRepository<ReminderEntity, String> {
 
     List<ReminderEntity> findByUserIdOrderByScheduledAtAsc(String userId);
 

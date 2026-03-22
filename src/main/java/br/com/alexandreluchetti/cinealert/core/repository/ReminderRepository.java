@@ -2,13 +2,12 @@ package br.com.alexandreluchetti.cinealert.core.repository;
 
 import br.com.alexandreluchetti.cinealert.dataprovider.entity.ReminderEntity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepositoryImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface ReminderRepository extends ReminderRepositoryImpl {
+public interface ReminderRepository {
 
     List<ReminderEntity> findByUserIdOrderByScheduledAtAsc(String userId);
 
@@ -22,4 +21,8 @@ public interface ReminderRepository extends ReminderRepositoryImpl {
     long countByUserIdAndStatus(String userId, ReminderStatus status);
 
     long countByUserId(String userId);
+
+    List<ReminderEntity> saveAll(List<ReminderEntity> pendentes);
+
+    ReminderEntity save(ReminderEntity next);
 }

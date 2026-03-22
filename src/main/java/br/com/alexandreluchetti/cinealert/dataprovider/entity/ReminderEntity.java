@@ -3,6 +3,7 @@ package br.com.alexandreluchetti.cinealert.dataprovider.entity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.Reminder;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -55,4 +56,49 @@ public class ReminderEntity {
     @CreatedDate
     @Field("created_at")
     private LocalDateTime createdAt;
+
+    public static ReminderEntity fromModel(Reminder reminder) {
+        return new ReminderEntity(
+                reminder.getId(),
+                reminder.getUserId(),
+                reminder.getUserFcmToken(),
+                reminder.getContentId(),
+                ContentSnapshotEntity.fromModel(reminder.getContentSnapshot()),
+                reminder.getScheduledAt(),
+                reminder.getRecurrence(),
+                reminder.getMessage(),
+                reminder.getStatus(),
+                reminder.getCreatedAt()
+        );
+    }
+
+    public static ReminderEntity recurrenceOneStatusPending(Reminder reminder) {
+        return new ReminderEntity(
+                reminder.getId(),
+                reminder.getUserId(),
+                reminder.getUserFcmToken(),
+                reminder.getContentId(),
+                ContentSnapshotEntity.fromModel(reminder.getContentSnapshot()),
+                reminder.getScheduledAt(),
+                Recurrence.ONCE,
+                reminder.getMessage(),
+                ReminderStatus.PENDING,
+                reminder.getCreatedAt()
+        );
+    }
+
+    public Reminder toModel() {
+        return new Reminder(
+                id,
+                userId,
+                userFcmToken,
+                contentId,
+                contentSnapshot.toModel(),
+                scheduledAt,
+                recurrence,
+                message,
+                status,
+                createdAt
+        );
+    }
 }
