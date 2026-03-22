@@ -6,7 +6,6 @@ import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.repository.UserRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
 import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
-import br.com.alexandreluchetti.cinealert.dataprovider.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
