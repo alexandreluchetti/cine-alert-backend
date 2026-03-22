@@ -6,7 +6,8 @@ import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -15,9 +16,10 @@ import org.springframework.http.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-@Slf4j
 @Component
 public class ImdbServiceImpl implements ImdbService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImdbServiceImpl.class);
 
     @Value("${app.imdb.api-key}")
     private String apiKey;
@@ -65,7 +67,7 @@ public class ImdbServiceImpl implements ImdbService {
             }
             return items;
         } catch (Exception e) {
-            log.error("Error searching IMDB: {}", e.getMessage());
+            LOGGER.error("Error searching IMDB: {}", e.getMessage());
             return List.of();
         }
     }
@@ -80,7 +82,7 @@ public class ImdbServiceImpl implements ImdbService {
             JsonNode root = mapper.readTree(response.getBody());
             return Optional.ofNullable(mapDetailToContentResponse(imdbId, root));
         } catch (Exception e) {
-            log.error("Error fetching IMDB detail for {}: {}", imdbId, e.getMessage());
+            LOGGER.error("Error fetching IMDB detail for {}: {}", imdbId, e.getMessage());
             return Optional.empty();
         }
     }
@@ -113,7 +115,7 @@ public class ImdbServiceImpl implements ImdbService {
             }
             return items;
         } catch (Exception e) {
-            log.error("Error fetching trending from IMDB: {}", e.getMessage());
+            LOGGER.error("Error fetching trending from IMDB: {}", e.getMessage());
             return List.of();
         }
     }
