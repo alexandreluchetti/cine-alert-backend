@@ -36,7 +36,7 @@ public class ReminderEntity {
 
     /** Denormalized snapshot of content data needed for notifications. */
     @Field("content_snapshot")
-    private ContentSnapshot contentSnapshot;
+    private ContentSnapshotEntity contentSnapshot;
 
     @Field("scheduled_at")
     private LocalDateTime scheduledAt;
@@ -55,16 +55,4 @@ public class ReminderEntity {
     @CreatedDate
     @Field("created_at")
     private LocalDateTime createdAt;
-
-    // ──────────────────────────────────────────────────────────────────────
-    // Embedded content snapshot (avoids extra DB lookups in the scheduler)
-    // ──────────────────────────────────────────────────────────────────────
-    @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-    public static class ContentSnapshot {
-        private String imdbId;
-        private String title;
-        private ContentType type;
-        private String posterUrl;
-        private Integer year;
-    }
 }

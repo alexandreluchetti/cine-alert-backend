@@ -2,6 +2,7 @@ package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.dataprovider.entity.ContentEntity;
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.ContentSnapshotEntity;
 import br.com.alexandreluchetti.cinealert.dataprovider.entity.ReminderEntity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
@@ -40,7 +41,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
         ContentEntity contentEntity = contentRepository.findById(request.getContentId())
                 .orElseThrow(() -> AppException.notFound("Content not found"));
 
-        ReminderEntity.ContentSnapshot snapshot = ReminderEntity.ContentSnapshot.builder()
+        ContentSnapshotEntity snapshot = ContentSnapshotEntity.builder()
                 .imdbId(contentEntity.getImdbId())
                 .title(contentEntity.getTitle())
                 .type(contentEntity.getType())
@@ -111,7 +112,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
     }
 
     private ReminderResponse toResponse(ReminderEntity r) {
-        ReminderEntity.ContentSnapshot snap = r.getContentSnapshot();
+        ContentSnapshotEntity snap = r.getContentSnapshot();
         ContentResponse contentResp = new ContentResponse(
                 r.getContentId(), snap != null ? snap.getImdbId() : null,
                 snap != null ? snap.getTitle() : null,

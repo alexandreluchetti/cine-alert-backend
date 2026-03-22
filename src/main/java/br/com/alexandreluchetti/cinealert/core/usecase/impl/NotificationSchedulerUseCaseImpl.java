@@ -1,5 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.dataprovider.entity.ContentSnapshotEntity;
 import br.com.alexandreluchetti.cinealert.dataprovider.entity.ReminderEntity;
 import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
@@ -36,7 +37,7 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
 
         for (ReminderEntity reminderEntity : pendentes) {
             try {
-                ReminderEntity.ContentSnapshot snap = reminderEntity.getContentSnapshot();
+                ContentSnapshotEntity snap = reminderEntity.getContentSnapshot();
                 String title = "🎬 " + (snap != null ? snap.getTitle() : "");
                 String body = reminderEntity.getMessage() != null && !reminderEntity.getMessage().isBlank()
                         ? reminderEntity.getMessage()
@@ -79,7 +80,7 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
                 .build();
 
         reminderRepository.save(next);
-        ReminderEntity.ContentSnapshot snap = reminderEntity.getContentSnapshot();
+        ContentSnapshotEntity snap = reminderEntity.getContentSnapshot();
         log.info("Scheduled next reminder for '{}' at {}", snap != null ? snap.getTitle() : "", nextTime);
     }
 }
