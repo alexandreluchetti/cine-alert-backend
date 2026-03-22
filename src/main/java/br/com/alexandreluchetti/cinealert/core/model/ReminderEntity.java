@@ -12,10 +12,14 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "reminders")
 @CompoundIndex(name = "idx_scheduled", def = "{'scheduled_at': 1, 'status': 1}")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class Reminder {
+public class ReminderEntity {
 
     @Id
     private String id;

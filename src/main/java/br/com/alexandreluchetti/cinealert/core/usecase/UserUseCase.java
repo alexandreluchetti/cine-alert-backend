@@ -1,20 +1,20 @@
 package br.com.alexandreluchetti.cinealert.core.usecase;
 
+import br.com.alexandreluchetti.cinealert.core.model.UserEntity;
 import br.com.alexandreluchetti.cinealert.core.model.user.UpdateUserRequest;
-import br.com.alexandreluchetti.cinealert.core.model.User;
 import br.com.alexandreluchetti.cinealert.core.model.user.UserResponse;
 
 public interface UserUseCase {
 
-    UserResponse getProfile(User user);
+    UserResponse getProfile(UserEntity userEntity);
 
-    UserResponse updateProfile(User user, UpdateUserRequest request);
+    UserResponse updateProfile(UserEntity userEntity, UpdateUserRequest request);
 
-    UserResponse updateAvatar(User user, String avatarUrl);
+    UserResponse updateAvatar(UserEntity userEntity, String avatarUrl);
 
-    void updateFcmToken(User user, String fcmToken);
+    void updateFcmToken(UserEntity userEntity, String fcmToken);
 
-    void deleteAccount(User user);
+    void deleteAccount(UserEntity userEntity);
 
-    User getAuthenticatedUser(org.springframework.security.core.Authentication authentication);
+    UserEntity getAuthenticatedUser(org.springframework.security.core.Authentication authentication);
 }

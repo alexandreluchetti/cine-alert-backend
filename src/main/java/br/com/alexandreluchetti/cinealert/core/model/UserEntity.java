@@ -10,9 +10,13 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "users")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class User {
+public class UserEntity {
 
     @Id
     private String id;

@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.repository;
 
-import br.com.alexandreluchetti.cinealert.core.model.Reminder;
+import br.com.alexandreluchetti.cinealert.core.model.ReminderEntity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepositoryImpl;
 
@@ -10,14 +10,14 @@ import java.util.Optional;
 
 public interface ReminderRepository extends ReminderRepositoryImpl {
 
-    List<Reminder> findByUserIdOrderByScheduledAtAsc(String userId);
+    List<ReminderEntity> findByUserIdOrderByScheduledAtAsc(String userId);
 
-    List<Reminder> findByUserIdAndStatusOrderByScheduledAtAsc(String userId, ReminderStatus status);
+    List<ReminderEntity> findByUserIdAndStatusOrderByScheduledAtAsc(String userId, ReminderStatus status);
 
-    Optional<Reminder> findByIdAndUserId(String id, String userId);
+    Optional<ReminderEntity> findByIdAndUserId(String id, String userId);
 
     // For the scheduler: find all PENDING reminders whose scheduled time has passed
-    List<Reminder> findByStatusAndScheduledAtLessThanEqual(ReminderStatus status, LocalDateTime dateTime);
+    List<ReminderEntity> findByStatusAndScheduledAtLessThanEqual(ReminderStatus status, LocalDateTime dateTime);
 
     long countByUserIdAndStatus(String userId, ReminderStatus status);
 

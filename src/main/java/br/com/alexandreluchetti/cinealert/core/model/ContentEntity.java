@@ -11,8 +11,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Document(collection = "contents")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class Content {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ContentEntity {
 
     @Id
     private String id;

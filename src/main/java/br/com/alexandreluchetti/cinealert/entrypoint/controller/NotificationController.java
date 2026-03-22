@@ -1,8 +1,8 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
+import br.com.alexandreluchetti.cinealert.core.model.UserEntity;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.notification.FcmTokenRequestDto;
-import br.com.alexandreluchetti.cinealert.core.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,8 +28,8 @@ public class NotificationController {
     public ResponseEntity<Map<String, String>> registerToken(
             Authentication auth,
             @Valid @RequestBody FcmTokenRequestDto request) {
-        User user = userUseCase.getAuthenticatedUser(auth);
-        userUseCase.updateFcmToken(user, request.fcmToken());
+        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
+        userUseCase.updateFcmToken(userEntity, request.fcmToken());
         return ResponseEntity.ok(Map.of("message", "FCM token registered successfully"));
     }
 }

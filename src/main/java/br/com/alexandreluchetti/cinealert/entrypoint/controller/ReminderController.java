@@ -5,7 +5,7 @@ import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequestDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponseDto;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponseDto;
-import br.com.alexandreluchetti.cinealert.core.model.User;
+import br.com.alexandreluchetti.cinealert.core.model.UserEntity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -35,9 +35,9 @@ public class ReminderController {
     public ResponseEntity<List<ReminderResponseDto>> getAll(
             Authentication auth,
             @RequestParam(required = false) ReminderStatus status) {
-        User user = userUseCase.getAuthenticatedUser(auth);
+        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(
-                reminderUseCase.getReminders(user, status).stream().map(ReminderResponseDto::fromModel).toList()
+                reminderUseCase.getReminders(userEntity, status).stream().map(ReminderResponseDto::fromModel).toList()
         );
     }
 
@@ -46,18 +46,18 @@ public class ReminderController {
     public ResponseEntity<ReminderResponseDto> create(
             Authentication auth,
             @Valid @RequestBody ReminderRequestDto request) {
-        User user = userUseCase.getAuthenticatedUser(auth);
+        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                ReminderResponseDto.fromModel(reminderUseCase.create(user, request.toModel()))
+                ReminderResponseDto.fromModel(reminderUseCase.create(userEntity, request.toModel()))
         );
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a specific reminder")
     public ResponseEntity<ReminderResponseDto> getById(Authentication auth, @PathVariable String id) {
-        User user = userUseCase.getAuthenticatedUser(auth);
+        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(
-                ReminderResponseDto.fromModel(reminderUseCase.getById(user, id))
+                ReminderResponseDto.fromModel(reminderUseCase.getById(userEntity, id))
         );
     }
 
@@ -67,26 +67,26 @@ public class ReminderController {
             Authentication auth,
             @PathVariable String id,
             @Valid @RequestBody ReminderRequestDto request) {
-        User user = userUseCase.getAuthenticatedUser(auth);
+        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(
-                ReminderResponseDto.fromModel(reminderUseCase.update(user, id, request.toModel()))
+                ReminderResponseDto.fromModel(reminderUseCase.update(userEntity, id, request.toModel()))
         );
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Cancel a reminder")
     public ResponseEntity<Map<String, String>> delete(Authentication auth, @PathVariable String id) {
-        User user = userUseCase.getAuthenticatedUser(auth);
-        reminderUseCase.cancel(user, id);
+        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
+        reminderUseCase.cancel(userEntity, id);
         return ResponseEntity.ok(Map.of("message", "Reminder cancelled successfully"));
     }
 
     @GetMapping("/stats")
     @Operation(summary = "Get reminder statistics for the authenticated user")
     public ResponseEntity<ReminderStatsResponseDto> getStats(Authentication auth) {
-        User user = userUseCase.getAuthenticatedUser(auth);
+        UserEntity userEntity = userUseCase.getAuthenticatedUser(auth);
         return ResponseEntity.ok(
-                ReminderStatsResponseDto.fromModel(reminderUseCase.getStats(user))
+                ReminderStatsResponseDto.fromModel(reminderUseCase.getStats(userEntity))
         );
     }
 }

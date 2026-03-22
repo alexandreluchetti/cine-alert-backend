@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
-import br.com.alexandreluchetti.cinealert.core.model.Content;
+import br.com.alexandreluchetti.cinealert.core.model.ContentEntity;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
 import br.com.alexandreluchetti.cinealert.core.service.ImdbService;
@@ -32,7 +32,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
 
     @Override
     public ContentResponse getDetail(String imdbId) {
-        Optional<Content> cached = contentRepository.findByImdbId(imdbId);
+        Optional<ContentEntity> cached = contentRepository.findByImdbId(imdbId);
         if (cached.isPresent() && cached.get().getCachedAt().isAfter(LocalDateTime.now().minusHours(CACHE_HOURS))) {
             return toResponse(cached.get());
         }
@@ -46,7 +46,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
     }
 
     @Override
-    public Content getOrCacheContent(String contentId) {
+    public ContentEntity getOrCacheContent(String contentId) {
         return contentRepository.findById(contentId)
                 .orElseThrow(() -> AppException.notFound("Content not found with id: " + contentId));
     }
@@ -74,22 +74,22 @@ public class ContentUseCaseImpl implements ContentUseCase {
         return imdbService.getGenres();
     }
 
-    private void cacheContent(String imdbId, ContentResponse response, Content existing) {
-        Content content = existing != null ? existing : Content.builder().imdbId(imdbId).build();
-        content.setTitle(response.getTitle());
-        content.setType(response.getType());
-        content.setPosterUrl(response.getPosterUrl());
-        content.setYear(response.getYear());
-        content.setRating(response.getRating());
-        content.setGenre(response.getGenreString());
-        content.setSynopsis(response.getSynopsis());
-        content.setTrailerUrl(response.getTrailerUrl());
-        content.setRuntimeMinutes(response.getRuntimeMinutes());
-        content.setCachedAt(LocalDateTime.now());
-        contentRepository.save(content);
+    private void cacheContent(String imdbId, ContentResponse response, ContentEntity existing) {
+        ContentEntity contentEntity = existing != null ? existing : ContentEntity.builder().imdbId(imdbId).build();
+        contentEntity.setTitle(response.getTitle());
+        contentEntity.setType(response.getType());
+        contentEntity.setPosterUrl(response.getPosterUrl());
+        contentEntity.setYear(response.getYear());
+        contentEntity.setRating(response.getRating());
+        contentEntity.setGenre(response.getGenreString());
+        contentEntity.setSynopsis(response.getSynopsis());
+        contentEntity.setTrailerUrl(response.getTrailerUrl());
+        contentEntity.setRuntimeMinutes(response.getRuntimeMinutes());
+        contentEntity.setCachedAt(LocalDateTime.now());
+        contentRepository.save(contentEntity);
     }
 
-    private ContentResponse toResponse(Content c) {
+    private ContentResponse toResponse(ContentEntity c) {
         return new ContentResponse(
                 c.getId(), c.getImdbId(), c.getTitle(), c.getType(),
                 c.getPosterUrl(), c.getYear(), c.getRating(),
