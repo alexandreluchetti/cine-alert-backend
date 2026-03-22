@@ -1,6 +1,5 @@
 package br.com.alexandreluchetti.cinealert.dataprovider.entity;
 
-import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.Reminder;
