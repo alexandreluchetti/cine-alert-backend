@@ -55,6 +55,10 @@ public class Content {
         this.cachedAt = LocalDateTime.now();
     }
 
+    public Content(String imdb) {
+        this.imdbId = imdb;
+    }
+
     public String getId() {
         return id;
     }

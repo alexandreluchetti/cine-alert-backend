@@ -1,9 +1,9 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.content.Content;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentSnapshot;
 import br.com.alexandreluchetti.cinealert.core.model.reminder.Reminder;
 import br.com.alexandreluchetti.cinealert.core.model.user.User;
-import br.com.alexandreluchetti.cinealert.dataprovider.entity.ContentEntity;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
@@ -38,22 +38,22 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     @Override
     public ReminderResponse create(User user, ReminderRequest request) {
-        ContentEntity contentEntity = contentRepository.findById(request.getContentId())
+        Content content = contentRepository.findById(request.getContentId())
                 .orElseThrow(() -> AppException.notFound("Content not found"));
 
         ContentSnapshot snapshot = new ContentSnapshot(
-                contentEntity.getImdbId(),
-                contentEntity.getTitle(),
-                contentEntity.getType(),
-                contentEntity.getPosterUrl(),
-                contentEntity.getYear()
+                content.getImdbId(),
+                content.getTitle(),
+                content.getType(),
+                content.getPosterUrl(),
+                content.getYear()
         );
 
         Reminder reminder = new Reminder(
                 null,
                 user.getId(),
                 user.getFcmToken(),
-                contentEntity.getId(),
+                content.getId(),
                 snapshot,
                 request.getScheduledAt(),
                 request.getRecurrence() != null ? request.getRecurrence() : Recurrence.ONCE,
