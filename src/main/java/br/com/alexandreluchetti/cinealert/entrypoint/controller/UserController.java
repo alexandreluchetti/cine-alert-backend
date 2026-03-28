@@ -58,4 +58,12 @@ public class UserController {
         userUseCase.deleteAccount(user);
         return ResponseEntity.ok(Map.of("message", "Account deactivated successfully"));
     }
+
+    @PutMapping("/me/fcm-token")
+    @Operation(summary = "Update FCM token for push notifications")
+    public ResponseEntity<Map<String, String>> updateFcmToken(Authentication auth, @Valid @RequestBody br.com.alexandreluchetti.cinealert.entrypoint.dto.user.FcmTokenRequestDto request) {
+        User user = userUseCase.getAuthenticatedUser(auth);
+        userUseCase.updateFcmToken(user, request.token());
+        return ResponseEntity.ok(Map.of("message", "FCM token updated successfully"));
+    }
 }

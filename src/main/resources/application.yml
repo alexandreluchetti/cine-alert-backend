@@ -35,8 +35,8 @@ app:
     host: imdb8.p.rapidapi.com
 
   firebase:
-    credentials-path: ${FIREBASE_CREDENTIALS_PATH:}
-    enabled: ${FIREBASE_ENABLED:false}
+    credentials-path: ${FIREBASE_CREDENTIALS_PATH}
+    enabled: ${FIREBASE_ENABLED:true}
 
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:*,http://127.0.0.1:*,http://10.0.2.2:*,http://localhost:3000,http://localhost:8081,http://localhost:5000,http://localhost:5555}
