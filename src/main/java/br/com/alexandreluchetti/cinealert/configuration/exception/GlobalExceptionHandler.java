@@ -8,11 +8,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -20,6 +22,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ErrorResponse> handleAppException(AppException ex) {
+        log.error("AppException occurred: {}", ex.getMessage(), ex);
         return ResponseEntity.status(ex.getStatus())
             .body(new ErrorResponse(
                 ex.getStatus().value(),
@@ -31,6 +34,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+        log.warn("Bad credentials attempt");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .body(new ErrorResponse(401, "Unauthorized", "Invalid email or password", LocalDateTime.now()));
     }
@@ -42,6 +46,8 @@ public class GlobalExceptionHandler {
             String field = ((FieldError) error).getField();
             fieldErrors.put(field, error.getDefaultMessage());
         });
+        
+        log.warn("Validation Failed. fieldErrors: {}", fieldErrors);
 
         Map<String, Object> body = new HashMap<>();
         body.put("status", 400);
@@ -54,6 +60,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        log.error("An unexpected error occurred: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(new ErrorResponse(500, "Internal Server Error", "An unexpected error occurred", LocalDateTime.now()));
     }
