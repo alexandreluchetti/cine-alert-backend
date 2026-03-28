@@ -1,71 +1,82 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
-import br.com.alexandreluchetti.cinealert.configuration.shared.JwtUtil;
+import br.com.alexandreluchetti.cinealert.core.model.auth.*;
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
+import br.com.alexandreluchetti.cinealert.core.repository.UserRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.AuthUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.auth.*;
-import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
-import br.com.alexandreluchetti.cinealert.core.model.User;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import br.com.alexandreluchetti.cinealert.core.exception.AppException;
+import br.com.alexandreluchetti.cinealert.core.usecase.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 public class AuthUseCaseImpl implements AuthUseCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthUseCaseImpl.class);
+
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final long accessExpiration;
 
-    public AuthUseCaseImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AuthUseCaseImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, long accessExpiration) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.accessExpiration = accessExpiration;
     }
 
-    @Value("${app.jwt.access-expiration}")
-    private long accessExpiration;
-
     @Override
-    @Transactional
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
+        LOGGER.info("Registering new user {}", request.getEmail());
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            LOGGER.warn("User with email {} already exists", request.getEmail());
             throw AppException.conflict("Email already registered");
         }
 
-        User user = User.builder()
-                .name(request.name())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .build();
+        User user = User.register(
+                request.getName(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword())
+        );
 
         user = userRepository.save(user);
 
+        LOGGER.info("New user registered {}", user.getId());
         return buildAuthResponse(user);
     }
 
     @Override
     public AuthResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.email())
+        LOGGER.info("Authenticating user {}", request.getEmail());
+
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> AppException.unauthorized("Invalid email or password"));
 
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            LOGGER.warn("Invalid password");
             throw AppException.unauthorized("Invalid email or password");
         }
 
         if (!user.isActive()) {
+            LOGGER.warn("User is not active");
             throw AppException.forbidden("Account is deactivated");
         }
 
+        LOGGER.info("Authenticated user {}", request.getEmail());
         return buildAuthResponse(user);
     }
 
     @Override
     public AuthResponse refresh(RefreshRequest request) {
-        String token = request.refreshToken();
+        LOGGER.info("Refreshing token");
+
+        String token = request.getRefreshToken();
 
         if (!jwtUtil.isTokenValid(token) || !jwtUtil.isRefreshToken(token)) {
+            LOGGER.warn("Invalid refresh token");
             throw AppException.unauthorized("Invalid or expired refresh token");
         }
 
@@ -73,14 +84,13 @@ public class AuthUseCaseImpl implements AuthUseCase {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> AppException.unauthorized("User not found"));
 
+        LOGGER.info("Refreshed user {}", email);
         return buildAuthResponse(user);
     }
 
     @Override
     public void forgotPassword(ForgotPasswordRequest request) {
-        // In a real app, send email with reset link
-        // For now, log and return success (don't reveal if email exists)
-        log.info("Password reset requested for: {}", request.email());
+        LOGGER.info("Password reset requested for: {}", request.getEmail());
     }
 
     private AuthResponse buildAuthResponse(User user) {
@@ -91,6 +101,6 @@ public class AuthUseCaseImpl implements AuthUseCase {
                 accessToken,
                 refreshToken,
                 accessExpiration / 1000,
-                new AuthResponse.UserInfo(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl()));
+                new UserInfo(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl()));
     }
 }

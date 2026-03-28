@@ -1,7 +1,8 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,25 +21,35 @@ public class ContentController {
 
     @GetMapping("/search")
     @Operation(summary = "Search movies and series")
-    public ResponseEntity<List<ContentResponse>> search(
+    public ResponseEntity<List<ContentResponseDto>> search(
             @RequestParam String q,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Double rating) {
-        return ResponseEntity.ok(contentUseCase.search(q, type, genre, year, rating));
+        return ResponseEntity.ok(
+                contentUseCase.search(q, type, genre, year, rating).stream()
+                        .map(ContentResponseDto::fromModel)
+                        .toList()
+        );
     }
 
     @GetMapping("/{imdbId}")
     @Operation(summary = "Get content detail by IMDB ID")
-    public ResponseEntity<ContentResponse> getDetail(@PathVariable String imdbId) {
-        return ResponseEntity.ok(contentUseCase.getDetail(imdbId));
+    public ResponseEntity<ContentResponseDto> getDetail(@PathVariable String imdbId) {
+        return ResponseEntity.ok(
+                ContentResponseDto.fromModel(contentUseCase.getDetail(imdbId))
+        );
     }
 
     @GetMapping("/trending")
     @Operation(summary = "Get trending movies")
-    public ResponseEntity<List<ContentResponse>> getTrending() {
-        return ResponseEntity.ok(contentUseCase.getTrending());
+    public ResponseEntity<List<ContentResponseDto>> getTrending() {
+        return ResponseEntity.ok(
+                contentUseCase.getTrending().stream()
+                        .map(ContentResponseDto::fromModel)
+                        .toList()
+        );
     }
 
     @GetMapping("/genres")

@@ -1,7 +1,7 @@
 package br.com.alexandreluchetti.cinealert.core.usecase;
 
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
-import br.com.alexandreluchetti.cinealert.core.model.Content;
+import br.com.alexandreluchetti.cinealert.core.model.content.Content;
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface ContentUseCase {
 
     ContentResponse getDetail(String imdbId);
 
-    Content getOrCacheContent(Long contentId);
+    Content getOrCacheContent(String contentId);
 
     List<ContentResponse> getTrending();
 

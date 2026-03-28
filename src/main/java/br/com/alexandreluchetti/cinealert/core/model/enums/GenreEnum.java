@@ -1,0 +1,42 @@
+package br.com.alexandreluchetti.cinealert.core.model.enums;
+
+import lombok.Getter;
+
+@Getter
+public enum GenreEnum {
+
+    ACTION("Action"),
+    ADVENTURE("Adventure"),
+    ANIMATION("Animation"),
+    BIOGRAPHY("Biography"),
+    COMEDY("Comedy"),
+    CRIME("Crime"),
+    DOCUMENTARY("Documentary"),
+    DRAMA("Drama"),
+    FANTASY("Fantasy"),
+    HORROR("Horror"),
+    MUSIC("Music"),
+    MYSTERY("Mystery"),
+    ROMANCE("Romance"),
+    SCI_FI("Sci-Fi"),
+    SPORT("Sport"),
+    THRILLER("Thriller"),
+    WAR("War"),
+    WESTERN("Western");
+
+    private final String value;
+
+    GenreEnum(String value) {
+        this.value = value;
+    }
+
+    public static GenreEnum fromValue(String value) {
+        for (GenreEnum genre : GenreEnum.values()) {
+            if (genre.getValue().equalsIgnoreCase(value)) {
+                return genre;
+            }
+        }
+
+        return null;
+    }
+}

@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+
+  mongodb:
+    image: mongo:7
+    container_name: cinealert-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: cinealert
+      MONGO_INITDB_ROOT_USERNAME: cinealert_user
+      MONGO_INITDB_ROOT_PASSWORD: cinealert_pass
+    volumes:
+      - ./data:/data/db
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: cinealert-mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: cinealert_user
+      ME_CONFIG_MONGODB_ADMINPASSWORD: cinealert_pass
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    depends_on:
+      - mongodb

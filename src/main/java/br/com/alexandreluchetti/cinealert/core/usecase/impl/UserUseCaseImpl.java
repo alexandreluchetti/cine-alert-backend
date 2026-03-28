@@ -1,17 +1,21 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
+import br.com.alexandreluchetti.cinealert.core.model.user.UpdateUserRequest;
+import br.com.alexandreluchetti.cinealert.core.model.user.UserResponse;
+import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
+import br.com.alexandreluchetti.cinealert.core.repository.UserRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequest;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UserResponse;
-import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
-import br.com.alexandreluchetti.cinealert.core.model.User;
+import br.com.alexandreluchetti.cinealert.core.exception.AppException;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepository;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 public class UserUseCaseImpl implements UserUseCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserUseCaseImpl.class);
 
     private final UserRepository userRepository;
     private final ReminderRepository reminderRepository;
@@ -29,50 +33,63 @@ public class UserUseCaseImpl implements UserUseCase {
 
     @Override
     public UserResponse getProfile(User user) {
+        LOGGER.info("Fetching profile for {}", user.getEmail());
+
         long total = reminderRepository.countByUserId(user.getId());
         long sent = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.SENT);
+        LOGGER.info("Total reminders for {} is {}", user.getId(), total);
+
         return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl(), total, sent);
     }
 
     @Override
-    @Transactional
     public UserResponse updateProfile(User user, UpdateUserRequest request) {
-        if (request.name() != null && !request.name().isBlank()) {
-            user.setName(request.name());
+        LOGGER.info("Updating profile for {}", user.getEmail());
+
+        if (request.getName() != null && !request.getName().isBlank()) {
+            user.setName(request.getName());
         }
-        if (request.password() != null && !request.password().isBlank()) {
-            user.setPassword(passwordEncoder.encode(request.password()));
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
         userRepository.save(user);
+        LOGGER.info("Updated profile for {}", user.getEmail());
         return getProfile(user);
     }
 
     @Override
-    @Transactional
     public UserResponse updateAvatar(User user, String avatarUrl) {
+        LOGGER.info("Updating avatar for {}", user.getEmail());
         user.setAvatarUrl(avatarUrl);
         userRepository.save(user);
+        LOGGER.info("Updated avatar for {}", user.getEmail());
         return getProfile(user);
     }
 
     @Override
-    @Transactional
     public void updateFcmToken(User user, String fcmToken) {
+        LOGGER.info("Updating FCM token for {}", user.getEmail());
         user.setFcmToken(fcmToken);
         userRepository.save(user);
+        LOGGER.info("Updated FCM token for {}", user.getEmail());
     }
 
     @Override
-    @Transactional
     public void deleteAccount(User user) {
+        LOGGER.info("Deleting account for {}", user.getEmail());
         user.setActive(false);
         userRepository.save(user);
+        LOGGER.info("Deleted account for {}", user.getEmail());
     }
 
     @Override
-    public User getAuthenticatedUser(org.springframework.security.core.Authentication authentication) {
-        String email = authentication.getName();
-        return userRepository.findByEmail(email)
+    public User getAuthenticatedUser(Authentication authentication) {
+        LOGGER.info("Fetching authenticated user for {}", authentication.getPrincipal());
+        User user = (User) authentication.getPrincipal();
+        String email = user.getEmail();
+        User userFound = userRepository.findByEmail(email)
                 .orElseThrow(() -> AppException.notFound("User not found"));
+        LOGGER.info("Fetched authenticated user for {}", email);
+        return userFound;
     }
 }

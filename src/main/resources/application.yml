@@ -5,24 +5,9 @@ spring:
   application:
     name: cine-alert
 
-  datasource:
-    url: jdbc:sqlite:${DB_PATH:./data/cinealert.db}
-    driver-class-name: org.sqlite.JDBC
-    username: ""
-    password: ""
-
-  jpa:
-    database-platform: org.hibernate.community.dialect.SQLiteDialect
-    hibernate:
-      ddl-auto: update
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
-
-  sql:
-    init:
-      mode: never
+  data:
+    mongodb:
+      uri: ${MONGO_URI:mongodb://cinealert_user:cinealert_pass@localhost:27017/cinealert?authSource=admin}
 
   jackson:
     default-property-inclusion: non_null

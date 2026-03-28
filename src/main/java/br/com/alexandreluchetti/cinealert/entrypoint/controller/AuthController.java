@@ -22,20 +22,22 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authUseCase.register(request));
+    public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(AuthResponseDto.fromModel(authUseCase.register(request.toModel())));
     }
 
     @PostMapping("/login")
     @Operation(summary = "Login and get JWT tokens")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authUseCase.login(request));
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
+        return ResponseEntity.ok(AuthResponseDto.fromModel(authUseCase.login(request.toModel())));
     }
 
     @PostMapping("/refresh")
     @Operation(summary = "Refresh access token using refresh token")
-    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshRequest request) {
-        return ResponseEntity.ok(authUseCase.refresh(request));
+    public ResponseEntity<AuthResponseDto> refresh(@Valid @RequestBody RefreshRequestDto request) {
+        return ResponseEntity.ok(AuthResponseDto.fromModel(authUseCase.refresh(request.toModel())));
     }
 
     @PostMapping("/logout")
@@ -46,8 +48,8 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     @Operation(summary = "Request password reset email")
-    public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        authUseCase.forgotPassword(request);
+    public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequestDto request) {
+        authUseCase.forgotPassword(request.toModel());
         return ResponseEntity.ok(Map.of("message", "If the email exists, a reset link was sent"));
     }
 }

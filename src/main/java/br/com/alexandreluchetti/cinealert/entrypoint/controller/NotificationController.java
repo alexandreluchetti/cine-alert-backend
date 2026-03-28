@@ -1,8 +1,8 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.notification.FcmTokenRequest;
-import br.com.alexandreluchetti.cinealert.core.model.User;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.notification.FcmTokenRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +27,7 @@ public class NotificationController {
     @Operation(summary = "Register or update FCM device token")
     public ResponseEntity<Map<String, String>> registerToken(
             Authentication auth,
-            @Valid @RequestBody FcmTokenRequest request) {
+            @Valid @RequestBody FcmTokenRequestDto request) {
         User user = userUseCase.getAuthenticatedUser(auth);
         userUseCase.updateFcmToken(user, request.fcmToken());
         return ResponseEntity.ok(Map.of("message", "FCM token registered successfully"));

@@ -1,23 +1,27 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
-import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequest;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponse;
-import br.com.alexandreluchetti.cinealert.configuration.exception.AppException;
-import br.com.alexandreluchetti.cinealert.core.model.Content;
-import br.com.alexandreluchetti.cinealert.core.model.Reminder;
-import br.com.alexandreluchetti.cinealert.core.model.User;
+import br.com.alexandreluchetti.cinealert.core.model.content.Content;
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentSnapshot;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.Reminder;
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.ContentRepository;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepository;
-import org.springframework.transaction.annotation.Transactional;
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderRequest;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderResponse;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.ReminderStatsResponse;
+import br.com.alexandreluchetti.cinealert.core.repository.ContentRepository;
+import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
+import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
+import br.com.alexandreluchetti.cinealert.core.exception.AppException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ReminderUseCaseImpl implements ReminderUseCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReminderUseCaseImpl.class);
 
     private final ReminderRepository reminderRepository;
     private final ContentRepository contentRepository;
@@ -29,87 +33,122 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     @Override
     public List<ReminderResponse> getReminders(User user, ReminderStatus status) {
-        List<Reminder> reminders = status != null
+        LOGGER.info("Fetching reminders for {} and status {}", user, status);
+
+        List<Reminder> reminderEntities = status != null
                 ? reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc(user.getId(), status)
                 : reminderRepository.findByUserIdOrderByScheduledAtAsc(user.getId());
 
-        return reminders.stream().map(this::toResponse).toList();
+        LOGGER.info("Found {} reminders", reminderEntities.size());
+        return reminderEntities.stream().map(this::toResponse).toList();
     }
 
     @Override
-    @Transactional
     public ReminderResponse create(User user, ReminderRequest request) {
-        Content content = contentRepository.findById(request.contentId())
+        LOGGER.info("Creating reminder for {}", request);
+
+        Content content = contentRepository.findById(request.getContentId())
                 .orElseThrow(() -> AppException.notFound("Content not found"));
 
-        Reminder reminder = Reminder.builder()
-                .user(user)
-                .content(content)
-                .scheduledAt(request.scheduledAt())
-                .recurrence(request.recurrence() != null ? request.recurrence() : Recurrence.ONCE)
-                .message(request.message())
-                .status(ReminderStatus.PENDING)
-                .build();
+        ContentSnapshot snapshot = new ContentSnapshot(
+                content.getImdbId(),
+                content.getTitle(),
+                content.getType(),
+                content.getPosterUrl(),
+                content.getYear()
+        );
 
+        Reminder reminder = new Reminder(
+                null,
+                user.getId(),
+                user.getFcmToken(),
+                content.getId(),
+                snapshot,
+                request.getScheduledAt(),
+                request.getRecurrence() != null ? request.getRecurrence() : Recurrence.ONCE,
+                request.getMessage(),
+                ReminderStatus.PENDING,
+                null
+        );
+
+        LOGGER.info("Creating reminder for {}", reminder);
         return toResponse(reminderRepository.save(reminder));
     }
 
     @Override
-    public ReminderResponse getById(User user, Long id) {
+    public ReminderResponse getById(User user, String id) {
+        LOGGER.info("Fetching reminder for {}", id);
+
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
+
+        LOGGER.info("Found reminder {}", reminder);
         return toResponse(reminder);
     }
 
     @Override
-    @Transactional
-    public ReminderResponse update(User user, Long id, ReminderRequest request) {
+    public ReminderResponse update(User user, String id, ReminderRequest request) {
+        LOGGER.info("Updating reminder for {}", id);
+
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 
-        if (reminder.getStatus() == ReminderStatus.SENT) {
-            throw AppException.badRequest("Cannot update an already sent reminder");
-        }
+        checkReminderStatus(reminder);
 
-        if (request.scheduledAt() != null)
-            reminder.setScheduledAt(request.scheduledAt());
-        if (request.recurrence() != null)
-            reminder.setRecurrence(request.recurrence());
-        if (request.message() != null)
-            reminder.setMessage(request.message());
+        if (request.getScheduledAt() != null)
+            reminder.setScheduledAt(request.getScheduledAt());
+        if (request.getRecurrence() != null)
+            reminder.setRecurrence(request.getRecurrence());
+        if (request.getMessage() != null)
+            reminder.setMessage(request.getMessage());
 
+        LOGGER.info("Updating reminder for {}", reminder);
         return toResponse(reminderRepository.save(reminder));
     }
 
     @Override
-    @Transactional
-    public void cancel(User user, Long id) {
+    public void cancel(User user, String id) {
+        LOGGER.info("Cancelling reminder for {}", id);
+
         Reminder reminder = reminderRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> AppException.notFound("Reminder not found"));
 
-        if (reminder.getStatus() == ReminderStatus.SENT) {
-            throw AppException.badRequest("Cannot cancel an already sent reminder");
-        }
+        checkReminderStatus(reminder);
 
         reminder.setStatus(ReminderStatus.CANCELLED);
+        LOGGER.info("Cancelling reminder for {}", reminder);
         reminderRepository.save(reminder);
+    }
+
+    private static void checkReminderStatus(Reminder reminder) {
+        if (reminder.getStatus() == ReminderStatus.SENT) {
+            LOGGER.warn("Reminder {} is already sent", reminder);
+            throw AppException.badRequest("Cannot cancel/update an already sent reminder");
+        }
     }
 
     @Override
     public ReminderStatsResponse getStats(User user) {
+        LOGGER.info("Fetching stats for {}", user);
+
         long total = reminderRepository.countByUserId(user.getId());
         long pending = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.PENDING);
         long sent = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.SENT);
         long cancelled = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.CANCELLED);
-        return new ReminderStatsResponse(total, pending, sent, cancelled);
+        ReminderStatsResponse reminderStatsResponse = new ReminderStatsResponse(total, pending, sent, cancelled);
+        LOGGER.info("Fetching stats for {}", reminderStatsResponse);
+        return reminderStatsResponse;
     }
 
     private ReminderResponse toResponse(Reminder r) {
-        Content c = r.getContent();
+        ContentSnapshot snap = r.getContentSnapshot();
         ContentResponse contentResp = new ContentResponse(
-                c.getId(), c.getImdbId(), c.getTitle(), c.getType(),
-                c.getPosterUrl(), c.getYear(), c.getRating(),
-                c.getGenre(), c.getSynopsis(), c.getTrailerUrl(), c.getRuntimeMinutes());
+                r.getContentId(), snap != null ? snap.getImdbId() : null,
+                snap != null ? snap.getTitle() : null,
+                snap != null ? snap.getType() : null,
+                snap != null ? snap.getPosterUrl() : null,
+                snap != null ? snap.getYear() : null,
+                null, java.util.Collections.emptyList(), null, null, null);
         return new ReminderResponse(
                 r.getId(), contentResp, r.getScheduledAt(),
                 r.getRecurrence(), r.getMessage(), r.getStatus(), r.getCreatedAt());

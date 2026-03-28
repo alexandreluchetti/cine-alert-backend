@@ -1,6 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.service;
 
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponse;
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 
 import java.util.List;
 import java.util.Optional;

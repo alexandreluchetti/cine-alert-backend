@@ -1,9 +1,9 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequest;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UserResponse;
-import br.com.alexandreluchetti.cinealert.core.model.User;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequestDto;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,23 +26,29 @@ public class UserController {
 
     @GetMapping("/me")
     @Operation(summary = "Get current user profile")
-    public ResponseEntity<UserResponse> getMe(Authentication auth) {
+    public ResponseEntity<UserResponseDto> getMe(Authentication auth) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(userUseCase.getProfile(user));
+        return ResponseEntity.ok(
+                UserResponseDto.fromModel(userUseCase.getProfile(user))
+        );
     }
 
     @PutMapping("/me")
     @Operation(summary = "Update current user profile")
-    public ResponseEntity<UserResponse> updateMe(Authentication auth, @Valid @RequestBody UpdateUserRequest request) {
+    public ResponseEntity<UserResponseDto> updateMe(Authentication auth, @Valid @RequestBody UpdateUserRequestDto request) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(userUseCase.updateProfile(user, request));
+        return ResponseEntity.ok(
+                UserResponseDto.fromModel(userUseCase.updateProfile(user, request.toModel()))
+        );
     }
 
     @PutMapping("/me/avatar")
     @Operation(summary = "Update avatar URL")
-    public ResponseEntity<UserResponse> updateAvatar(Authentication auth, @RequestBody Map<String, String> body) {
+    public ResponseEntity<UserResponseDto> updateAvatar(Authentication auth, @RequestBody Map<String, String> body) {
         User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(userUseCase.updateAvatar(user, body.get("avatarUrl")));
+        return ResponseEntity.ok(
+                UserResponseDto.fromModel(userUseCase.updateAvatar(user, body.get("avatarUrl")))
+        );
     }
 
     @DeleteMapping("/me")

@@ -1,11 +1,11 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.usecase.ReminderUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.UserUseCase;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequest;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponse;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponse;
-import br.com.alexandreluchetti.cinealert.core.model.User;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderRequestDto;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderResponseDto;
+import br.com.alexandreluchetti.cinealert.entrypoint.dto.reminder.ReminderStatsResponseDto;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -32,51 +32,61 @@ public class ReminderController {
 
     @GetMapping
     @Operation(summary = "List all reminders for the authenticated user")
-    public ResponseEntity<List<ReminderResponse>> getAll(
+    public ResponseEntity<List<ReminderResponseDto>> getAll(
             Authentication auth,
             @RequestParam(required = false) ReminderStatus status) {
-        User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderUseCase.getReminders(user, status));
+        User userEntity = userUseCase.getAuthenticatedUser(auth);
+        return ResponseEntity.ok(
+                reminderUseCase.getReminders(userEntity, status).stream().map(ReminderResponseDto::fromModel).toList()
+        );
     }
 
     @PostMapping
     @Operation(summary = "Create a new reminder")
-    public ResponseEntity<ReminderResponse> create(
+    public ResponseEntity<ReminderResponseDto> create(
             Authentication auth,
-            @Valid @RequestBody ReminderRequest request) {
-        User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.status(HttpStatus.CREATED).body(reminderUseCase.create(user, request));
+            @Valid @RequestBody ReminderRequestDto request) {
+        User userEntity = userUseCase.getAuthenticatedUser(auth);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ReminderResponseDto.fromModel(reminderUseCase.create(userEntity, request.toModel()))
+        );
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a specific reminder")
-    public ResponseEntity<ReminderResponse> getById(Authentication auth, @PathVariable Long id) {
-        User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderUseCase.getById(user, id));
+    public ResponseEntity<ReminderResponseDto> getById(Authentication auth, @PathVariable String id) {
+        User userEntity = userUseCase.getAuthenticatedUser(auth);
+        return ResponseEntity.ok(
+                ReminderResponseDto.fromModel(reminderUseCase.getById(userEntity, id))
+        );
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a reminder")
-    public ResponseEntity<ReminderResponse> update(
+    public ResponseEntity<ReminderResponseDto> update(
             Authentication auth,
-            @PathVariable Long id,
-            @Valid @RequestBody ReminderRequest request) {
-        User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderUseCase.update(user, id, request));
+            @PathVariable String id,
+            @Valid @RequestBody ReminderRequestDto request) {
+        User userEntity = userUseCase.getAuthenticatedUser(auth);
+        return ResponseEntity.ok(
+                ReminderResponseDto.fromModel(reminderUseCase.update(userEntity, id, request.toModel()))
+        );
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Cancel a reminder")
-    public ResponseEntity<Map<String, String>> delete(Authentication auth, @PathVariable Long id) {
-        User user = userUseCase.getAuthenticatedUser(auth);
-        reminderUseCase.cancel(user, id);
+    public ResponseEntity<Map<String, String>> delete(Authentication auth, @PathVariable String id) {
+        User userEntity = userUseCase.getAuthenticatedUser(auth);
+        reminderUseCase.cancel(userEntity, id);
         return ResponseEntity.ok(Map.of("message", "Reminder cancelled successfully"));
     }
 
     @GetMapping("/stats")
     @Operation(summary = "Get reminder statistics for the authenticated user")
-    public ResponseEntity<ReminderStatsResponse> getStats(Authentication auth) {
-        User user = userUseCase.getAuthenticatedUser(auth);
-        return ResponseEntity.ok(reminderUseCase.getStats(user));
+    public ResponseEntity<ReminderStatsResponseDto> getStats(Authentication auth) {
+        User userEntity = userUseCase.getAuthenticatedUser(auth);
+        return ResponseEntity.ok(
+                ReminderStatsResponseDto.fromModel(reminderUseCase.getStats(userEntity))
+        );
     }
 }

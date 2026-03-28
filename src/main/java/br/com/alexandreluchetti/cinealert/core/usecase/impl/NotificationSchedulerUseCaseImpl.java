@@ -1,20 +1,22 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentSnapshot;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.Reminder;
+import br.com.alexandreluchetti.cinealert.core.repository.ReminderRepository;
 import br.com.alexandreluchetti.cinealert.core.usecase.FcmUseCase;
 import br.com.alexandreluchetti.cinealert.core.usecase.NotificationSchedulerUseCase;
-import br.com.alexandreluchetti.cinealert.core.model.Reminder;
 import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
-import br.com.alexandreluchetti.cinealert.dataprovider.repository.ReminderRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
 public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUseCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationSchedulerUseCaseImpl.class);
 
     private final ReminderRepository reminderRepository;
     private final FcmUseCase fcmUseCase;
@@ -25,7 +27,6 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
     }
 
     @Override
-    @Transactional
     @Scheduled(fixedDelay = 60000) // every 60 seconds
     public void processarLembretesPendentes() {
         List<Reminder> pendentes = reminderRepository
@@ -34,19 +35,17 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
         if (pendentes.isEmpty())
             return;
 
-        log.info("Processing {} pending reminder(s)...", pendentes.size());
+        LOGGER.info("Processing {} pending reminder(s)...", pendentes.size());
 
         for (Reminder reminder : pendentes) {
             try {
-                String title = "🎬 " + reminder.getContent().getTitle();
+                ContentSnapshot snap = reminder.getContentSnapshot();
+                String title = "🎬 " + (snap != null ? snap.getTitle() : "");
                 String body = reminder.getMessage() != null && !reminder.getMessage().isBlank()
                         ? reminder.getMessage()
                         : "Hora do seu lembrete de cinema!";
 
-                fcmUseCase.sendNotification(
-                        reminder.getUser().getFcmToken(),
-                        title,
-                        body);
+                fcmUseCase.sendNotification(reminder.getUserFcmToken(), title, body);
 
                 reminder.setStatus(ReminderStatus.SENT);
 
@@ -54,7 +53,7 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
                     scheduleNext(reminder);
                 }
             } catch (Exception e) {
-                log.error("Error processing reminder id={}: {}", reminder.getId(), e.getMessage());
+                LOGGER.error("Error processing reminder id={}: {}", reminder.getId(), e.getMessage());
             }
         }
 
@@ -71,16 +70,21 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
         if (nextTime == null)
             return;
 
-        Reminder next = Reminder.builder()
-                .user(reminder.getUser())
-                .content(reminder.getContent())
-                .scheduledAt(nextTime)
-                .recurrence(reminder.getRecurrence())
-                .message(reminder.getMessage())
-                .status(ReminderStatus.PENDING)
-                .build();
+        Reminder next = new Reminder(
+                null,
+                reminder.getUserId(),
+                reminder.getUserFcmToken(),
+                reminder.getContentId(),
+                reminder.getContentSnapshot(),
+                nextTime,
+                reminder.getRecurrence(),
+                reminder.getMessage(),
+                ReminderStatus.PENDING,
+                null
+        );
 
         reminderRepository.save(next);
-        log.info("Scheduled next reminder for '{}' at {}", reminder.getContent().getTitle(), nextTime);
+        ContentSnapshot snap = reminder.getContentSnapshot();
+        LOGGER.info("Scheduled next reminder for '{}' at {}", snap != null ? snap.getTitle() : "", nextTime);
     }
 }

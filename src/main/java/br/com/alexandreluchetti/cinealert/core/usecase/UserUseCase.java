@@ -1,8 +1,9 @@
 package br.com.alexandreluchetti.cinealert.core.usecase;
 
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UpdateUserRequest;
-import br.com.alexandreluchetti.cinealert.entrypoint.dto.user.UserResponse;
-import br.com.alexandreluchetti.cinealert.core.model.User;
+import br.com.alexandreluchetti.cinealert.core.model.user.User;
+import br.com.alexandreluchetti.cinealert.core.model.user.UpdateUserRequest;
+import br.com.alexandreluchetti.cinealert.core.model.user.UserResponse;
+import org.springframework.security.core.Authentication;
 
 public interface UserUseCase {
 
@@ -16,5 +17,5 @@ public interface UserUseCase {
 
     void deleteAccount(User user);
 
-    User getAuthenticatedUser(org.springframework.security.core.Authentication authentication);
+    User getAuthenticatedUser(Authentication authentication);
 }
