@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class ContentResponse {
 
@@ -96,7 +97,11 @@ public class ContentResponse {
     }
 
     public String getGenreString() {
+        if (genres == null || genres.isEmpty()) {
+            return null;
+        }
         return genres.stream()
+                .filter(Objects::nonNull)
                 .map(GenreEnum::getValue)
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("");

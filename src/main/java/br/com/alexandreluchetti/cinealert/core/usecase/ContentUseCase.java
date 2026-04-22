@@ -16,4 +16,6 @@ public interface ContentUseCase {
     List<ContentResponse> getTrending();
 
     List<String> getGenres();
+
+    List<ContentResponse> getMostPopularMovies();
 }
