@@ -49,7 +49,7 @@ public class ImdbServiceImpl implements ImdbService {
     @Override
     public List<ContentResponse> search(String query, String type, String genre, Integer year, Double minRating) {
         try {
-            String url = baseUrl + "/title/find?q=" + encodeQuery(query);
+            String url = baseUrl + ImdbPath.FIND_Q.getValue() + encodeQuery(query);
             ResponseEntity<String> response = restTemplate.exchange(
                     url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
 
@@ -75,7 +75,7 @@ public class ImdbServiceImpl implements ImdbService {
     @Override
     public Optional<ContentResponse> getDetail(String imdbId) {
         try {
-            String url = baseUrl + "/title/get-overview-details?tconst=" + imdbId + "&currentCountry=BR";
+            String url = baseUrl + ImdbPath.GET_OVERVIEW_DETAILS_TCONST.getValue().replace("{?1}", imdbId);
             ResponseEntity<String> response = restTemplate.exchange(
                     url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
 
@@ -89,41 +89,17 @@ public class ImdbServiceImpl implements ImdbService {
 
     @Override
     public List<ContentResponse> getTrending() {
-        try {
-            String url = baseUrl + "/title/get-top-rated-movies";
-            ResponseEntity<String> response = restTemplate.exchange(
-                    url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
-
-            JsonNode root = mapper.readTree(response.getBody());
-            List<ContentResponse> items = new ArrayList<>();
-            if (root.isArray()) {
-                int count = 0;
-                for (JsonNode node : root) {
-                    if (count++ >= 20)
-                        break;
-                    String id = node.path("id").asText("").replace("/title/", "").replace("/", "");
-                    ContentResponse content = new ContentResponse(
-                            null, id,
-                            node.path("title").asText("Unknown"),
-                            ContentType.MOVIE,
-                            extractImageUrl(node.path("image")),
-                            node.path("year").asInt(0),
-                            safeDecimal(node.path("imDbRating").asText("0")),
-                            null, null, null, null);
-                    items.add(content);
-                }
-            }
-            return items;
-        } catch (Exception e) {
-            LOGGER.error("Error fetching trending from IMDB: {}", e.getMessage());
-            return List.of();
-        }
+        return getTrending(ImdbPath.GET_TOP_RATED_MOVIES);
     }
 
     @Override
     public List<ContentResponse> getMostPopularMovies() {
+        return getTrending(ImdbPath.GET_MOST_POPULAR_MOVIES);
+    }
+
+    private List<ContentResponse> getTrending(ImdbPath imdbPath) {
         try {
-            String url = baseUrl + "/title/get-most-popular-movies";
+            String url = baseUrl + imdbPath.getValue();
             ResponseEntity<String> response = restTemplate.exchange(
                     url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
 
@@ -134,9 +110,10 @@ public class ImdbServiceImpl implements ImdbService {
                 for (JsonNode node : root) {
                     if (count++ >= 20)
                         break;
-                    String id = node.asText("").replace("/title/", "").replace("/", "");
+                    JsonNode nodeId = (imdbPath == ImdbPath.GET_MOST_POPULAR_MOVIES) ? node : node.path("id");
                     ContentResponse content = new ContentResponse(
-                            null, id,
+                            null,
+                            nodeId.asText("").replace("/title/", "").replace("/", ""),
                             node.path("title").asText("Unknown"),
                             ContentType.MOVIE,
                             extractImageUrl(node.path("image")),
