@@ -1,33 +1,50 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  db:
-    image: mariadb:10.11
-    container_name: cinealert_db
+  mongodb:
+    image: mongo:7
+    container_name: cinealert-mongodb
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password_segura
-      MYSQL_DATABASE: cinealert
-      MYSQL_USER: cinealert_user
-      MYSQL_PASSWORD: cinealert_password
     ports:
-      - "3306:3306"
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: cinealert
+      MONGO_INITDB_ROOT_USERNAME: cinealert_user
+      MONGO_INITDB_ROOT_PASSWORD: cinealert_pass
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - ./mongodb/data:/data/db
     healthcheck:
-      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       timeout: 5s
       retries: 5
-  # Descomente o adminer abaixo se quiser uma interface web para gerenciar o banco (acesso em http://localhost:8080)
-  # adminer:
-  #   image: adminer:latest
-  #   container_name: cinealert_adminer
-  #   restart: always
-  #   ports:
-  #     - "8081:8080"
-  #   depends_on:
-  #     - db
 
-volumes:
-  mariadb_data:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cinealert_backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_URI=mongodb://cinealert_user:cinealert_pass@mongodb:27017/cinealert?authSource=admin
+      - FIREBASE_ENABLED=false
+      - FIREBASE_CREDENTIALS_PATH=
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: cinealert-mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: cinealert_user
+      ME_CONFIG_MONGODB_ADMINPASSWORD: cinealert_pass
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    depends_on:
+      mongodb:
+        condition: service_healthy

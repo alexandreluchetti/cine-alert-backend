@@ -19,7 +19,7 @@ public class SwaggerConfig {
                 .title("CineAlert API")
                 .description("REST API for CineAlert — Movie & Series Reminder App")
                 .version("1.0.0")
-                .contact(new Contact().name("CineAlert Team").email("dev@cinealert.com"))
+                .contact(new Contact().name("CineAlert Team").email("luchetti.92@gmail.com"))
             )
             .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
             .components(new Components()

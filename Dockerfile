@@ -1,11 +1,13 @@
 # Build stage
 FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
-COPY pom.xml .
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN sed -i 's/\r$//' mvnw
+RUN chmod +x mvnw
 COPY src ./src
 RUN --mount=type=cache,target=/root/.m2 \
-    ./mvnw -q package -DskipTests 2>/dev/null || \
-    (apk add --no-cache maven && mvn -q package -DskipTests)
+    ./mvnw clean package -DskipTests
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
