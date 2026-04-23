@@ -27,7 +27,7 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
     }
 
     @Override
-    @Scheduled(fixedDelay = 60000) // every 60 seconds
+    @Scheduled(cron = "0 * * * * *")
     public void processarLembretesPendentes() {
         List<Reminder> pendentes = reminderRepository
                 .findByStatusAndScheduledAtLessThanEqual(ReminderStatus.PENDING, LocalDateTime.now());

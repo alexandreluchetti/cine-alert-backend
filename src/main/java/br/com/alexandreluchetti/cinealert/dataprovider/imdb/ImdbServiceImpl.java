@@ -121,6 +121,39 @@ public class ImdbServiceImpl implements ImdbService {
     }
 
     @Override
+    public List<ContentResponse> getMostPopularMovies() {
+        try {
+            String url = baseUrl + "/title/get-most-popular-movies";
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url, HttpMethod.GET, new HttpEntity<>(buildHeaders()), String.class);
+
+            JsonNode root = mapper.readTree(response.getBody());
+            List<ContentResponse> items = new ArrayList<>();
+            if (root.isArray()) {
+                int count = 0;
+                for (JsonNode node : root) {
+                    if (count++ >= 20)
+                        break;
+                    String id = node.asText("").replace("/title/", "").replace("/", "");
+                    ContentResponse content = new ContentResponse(
+                            null, id,
+                            node.path("title").asText("Unknown"),
+                            ContentType.MOVIE,
+                            extractImageUrl(node.path("image")),
+                            node.path("year").asInt(0),
+                            safeDecimal(node.path("imDbRating").asText("0")),
+                            null, null, null, null);
+                    items.add(content);
+                }
+            }
+            return items;
+        } catch (Exception e) {
+            LOGGER.error("Error fetching trending from IMDB: {}", e.getMessage());
+            return List.of();
+        }
+    }
+
+    @Override
     public List<String> getGenres() {
         return Arrays.stream(GenreEnum.values()).map(GenreEnum::getValue).toList();
     }

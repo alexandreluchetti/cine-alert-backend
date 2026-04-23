@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,8 +67,24 @@ public class ContentUseCaseImpl implements ContentUseCase {
         LOGGER.info("Getting trending");
 
         List<ContentResponse> basicTrending = imdbService.getTrending();
-        List<ContentResponse> detailedTrending = new java.util.ArrayList<>();
-        
+        List<ContentResponse> detailedTrending = getDetailedTranding(basicTrending);
+
+        LOGGER.info("Found {} trending", detailedTrending.size());
+        return detailedTrending;
+    }
+
+    public List<ContentResponse> getMostPopularMovies() {
+        LOGGER.info("Getting most popular movies");
+
+        List<ContentResponse> basicPopularMovies = imdbService.getMostPopularMovies();
+        List<ContentResponse> detailedTrending = getDetailedTranding(basicPopularMovies);
+
+        LOGGER.info("Found {} trending", detailedTrending.size());
+        return detailedTrending;
+    }
+
+    private List<ContentResponse> getDetailedTranding(List<ContentResponse> basicTrending) {
+        List<ContentResponse> detailedTrending = new ArrayList<>();
         for (ContentResponse basic : basicTrending) {
             try {
                 ContentResponse detail = this.getDetail(basic.getImdbId());
@@ -77,8 +94,6 @@ public class ContentUseCaseImpl implements ContentUseCase {
                 detailedTrending.add(basic);
             }
         }
-
-        LOGGER.info("Found {} trending", detailedTrending.size());
         return detailedTrending;
     }
 

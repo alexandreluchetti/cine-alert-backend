@@ -14,4 +14,6 @@ public interface ImdbService {
     List<ContentResponse> getTrending();
 
     List<String> getGenres();
+
+    List<ContentResponse> getMostPopularMovies();
 }

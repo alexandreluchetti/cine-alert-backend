@@ -1,6 +1,5 @@
 package br.com.alexandreluchetti.cinealert.entrypoint.controller;
 
-import br.com.alexandreluchetti.cinealert.core.model.content.ContentResponse;
 import br.com.alexandreluchetti.cinealert.core.usecase.ContentUseCase;
 import br.com.alexandreluchetti.cinealert.entrypoint.dto.content.ContentResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,5 +55,15 @@ public class ContentController {
     @Operation(summary = "Get available genres")
     public ResponseEntity<List<String>> getGenres() {
         return ResponseEntity.ok(contentUseCase.getGenres());
+    }
+
+    @GetMapping("/trending/movies")
+    @Operation(summary = "Get trending movies")
+    public ResponseEntity<List<ContentResponseDto>> getMostPopularMovies() {
+        return ResponseEntity.ok(
+                contentUseCase.getMostPopularMovies().stream()
+                        .map(ContentResponseDto::fromModel)
+                        .toList()
+        );
     }
 }
