@@ -8,50 +8,52 @@
 
 ```
 cine-alert/
-├── backend/        → Spring Boot 3.2 + Java 21 + SQLite
+├── backend/        → Spring Boot 3.2 + Java 21 + MongoDB
 └── mobile/         → Flutter 3.16 + Riverpod + GoRouter
 ```
 
-### ER Diagram
+### Data Model (MongoDB)
 
 ```mermaid
 erDiagram
     users {
-        BIGINT id PK
-        VARCHAR name
-        VARCHAR email UK
-        VARCHAR password
-        VARCHAR avatar_url
-        VARCHAR fcm_token
-        BOOLEAN active
-        DATETIME created_at
-        DATETIME updated_at
+        String id PK
+        String name
+        String email UK
+        String password
+        String avatar_url
+        String fcm_token
+        Boolean active
+        LocalDateTime created_at
+        LocalDateTime updated_at
     }
 
     contents {
-        BIGINT id PK
-        VARCHAR imdb_id UK
-        VARCHAR title
-        VARCHAR type
-        VARCHAR poster_url
-        INT year
-        DECIMAL rating
-        VARCHAR genre
-        TEXT synopsis
-        VARCHAR trailer_url
-        INT runtime_minutes
-        DATETIME cached_at
+        String id PK
+        String imdb_id UK
+        String title
+        String type
+        String poster_url
+        Integer year
+        BigDecimal rating
+        String genre
+        String synopsis
+        String trailer_url
+        Integer runtime_minutes
+        LocalDateTime cached_at
     }
 
     reminders {
-        BIGINT id PK
-        BIGINT user_id FK
-        BIGINT content_id FK
-        DATETIME scheduled_at
-        VARCHAR recurrence
-        VARCHAR message
-        VARCHAR status
-        DATETIME created_at
+        String id PK
+        String user_id FK
+        String user_fcm_token
+        String content_id FK
+        Object content_snapshot "Denormalized content data"
+        LocalDateTime scheduled_at
+        String recurrence
+        String message
+        String status
+        LocalDateTime created_at
     }
 
     users ||--o{ reminders : "has"
@@ -66,12 +68,19 @@ erDiagram
 - Java 21+
 - Maven 3.8+
 
-### 1. Configurar variáveis de ambiente
+### 1. Configurar variáveis de ambiente e Banco de Dados
 
 ```bash
 cd backend
 cp .env.example .env
-# Edite .env com seus valores (o banco SQLite é criado automaticamente)
+# Edite .env com seus valores
+```
+
+O backend requer o MongoDB em execução. Utilize o Docker Compose na raiz do projeto para subir o banco:
+
+```bash
+# Na raiz do projeto:
+docker-compose up -d mongodb
 ```
 
 ### 2. Executar
@@ -86,8 +95,6 @@ mvnw.cmd spring-boot:run
 export IMDB_API_KEY=4c734d2690msh7f096ff24445fd2p191bd6jsnd0c04fe350c7
 ./mvnw spring-boot:run
 ```
-
-O banco de dados SQLite é criado automaticamente em `./data/cinealert.db`.
 
 ### 3. Acessar Swagger UI
 
