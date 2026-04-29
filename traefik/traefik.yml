@@ -18,8 +18,7 @@ certificatesResolvers:
     acme:
       email: luchetti.92@gmail.com
       storage: /acme.json
-      httpChallenge:
-        entryPoint: web
+      tlsChallenge: {}        # ← porta 443, sem depender do port 80
 
 providers:
   docker:
