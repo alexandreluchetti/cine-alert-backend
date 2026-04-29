@@ -25,3 +25,6 @@ run_log_utf8.txt
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ─── Claude ─────────────────────────────
+.claude
