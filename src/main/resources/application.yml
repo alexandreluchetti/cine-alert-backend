@@ -30,12 +30,12 @@ app:
     refresh-expiration: 604800000     # 7 days in ms
 
   imdb:
-    api-key: ${IMDB_API_KEY:4c734d2690msh7f096ff24445fd2p191bd6jsnd0c04fe350c7}
+    api-key: ${IMDB_API_KEY:imdb-api-key}
     base-url: https://imdb8.p.rapidapi.com
     host: imdb8.p.rapidapi.com
 
   firebase:
-    credentials-path: ${FIREBASE_CREDENTIALS_PATH}
+    credentials-path: ${FIREBASE_CREDENTIALS_PATH:}
     enabled: ${FIREBASE_ENABLED:false}
 
   cors:
