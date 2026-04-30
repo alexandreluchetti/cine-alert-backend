@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +20,7 @@ class ReminderDtosTest {
 
     @Test
     void reminderRequestDto_toModel() {
-        ReminderRequestDto dto = new ReminderRequestDto("c-1", LocalDateTime.now(), Recurrence.ONCE, "Msg");
+        ReminderRequestDto dto = new ReminderRequestDto("c-1", OffsetDateTime.now(ZoneOffset.UTC).plusHours(1), Recurrence.ONCE, "Msg");
         ReminderRequest model = dto.toModel();
         assertThat(model.getContentId()).isEqualTo("c-1");
     }
