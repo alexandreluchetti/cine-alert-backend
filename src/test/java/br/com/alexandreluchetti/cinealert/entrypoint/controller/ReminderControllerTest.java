@@ -75,7 +75,7 @@ class ReminderControllerTest {
         String body = """
                 {
                     "contentId": "c-1",
-                    "scheduledAt": "2030-01-01T12:00:00+00:00"
+                    "scheduledAt": "2030-01-01T12:00:00"
                 }
                 """;
 
@@ -110,7 +110,7 @@ class ReminderControllerTest {
         String body = """
                 {
                     "contentId": "c-1",
-                    "scheduledAt": "2030-01-01T12:00:00+00:00",
+                    "scheduledAt": "2030-01-01T12:00:00",
                     "message": "Updated Msg"
                 }
                 """;
