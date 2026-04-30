@@ -6,7 +6,8 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 public record ReminderRequestDto (
     @NotNull(message = "Content ID is required")
@@ -14,7 +15,7 @@ public record ReminderRequestDto (
 
     @NotNull(message = "Scheduled time is required")
     @Future(message = "Scheduled time must be in the future")
-    LocalDateTime scheduledAt,
+    ZonedDateTime scheduledAt,
 
     Recurrence recurrence,
 
@@ -23,6 +24,6 @@ public record ReminderRequestDto (
 ) {
 
     public ReminderRequest toModel() {
-        return new ReminderRequest(contentId, scheduledAt, recurrence, message);
+        return new ReminderRequest(contentId, scheduledAt.withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime(), recurrence, message);
     }
 }

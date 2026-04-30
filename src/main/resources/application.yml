@@ -13,6 +13,8 @@ spring:
     default-property-inclusion: non_null
     serialization:
       write-dates-as-timestamps: false
+    deserialization:
+      adjust-dates-to-context-time-zone: false
 
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
