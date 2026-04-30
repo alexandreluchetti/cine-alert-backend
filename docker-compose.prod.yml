@@ -65,6 +65,8 @@ services:
       - MAIL_PASSWORD=${MAIL_PASSWORD:-}
       - IMDB_API_KEY=${IMDB_API_KEY}
       - CORS_ORIGINS=${CORS_ORIGINS}
+    volumes:
+      - ${FIREBASE_CREDENTIALS_HOST_PATH}:/app/firebase-credentials.json:ro
     depends_on:
       mongodb:
         condition: service_healthy
