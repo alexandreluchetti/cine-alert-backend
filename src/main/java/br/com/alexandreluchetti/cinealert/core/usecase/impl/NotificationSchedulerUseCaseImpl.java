@@ -77,6 +77,7 @@ public class NotificationSchedulerUseCaseImpl implements NotificationSchedulerUs
                 reminder.getContentId(),
                 reminder.getContentSnapshot(),
                 nextTime,
+                reminder.getZoneId(),
                 reminder.getRecurrence(),
                 reminder.getMessage(),
                 ReminderStatus.PENDING,

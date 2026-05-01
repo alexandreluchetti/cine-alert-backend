@@ -24,6 +24,12 @@ public record ReminderRequestDto (
 ) {
 
     public ReminderRequest toModel() {
-        return new ReminderRequest(contentId, scheduledAt.withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime(), recurrence, message);
+        return new ReminderRequest(
+                contentId,
+                scheduledAt.withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime(),
+                scheduledAt.getZone().getId(),
+                recurrence,
+                message
+        );
     }
 }

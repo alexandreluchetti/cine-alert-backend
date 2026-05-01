@@ -33,7 +33,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     @Override
     public List<ReminderResponse> getReminders(User user, ReminderStatus status) {
-        LOGGER.info("Fetching reminders for {} and status {}", user, status);
+        LOGGER.info("Fetching reminders for {} and status {}", user.getName(), status);
 
         List<Reminder> reminderEntities = status != null
                 ? reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc(user.getId(), status)
@@ -65,6 +65,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
                 content.getId(),
                 snapshot,
                 request.getScheduledAt(),
+                request.getZoneId(),
                 request.getRecurrence() != null ? request.getRecurrence() : Recurrence.ONCE,
                 request.getMessage(),
                 ReminderStatus.PENDING,
@@ -129,7 +130,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     @Override
     public ReminderStatsResponse getStats(User user) {
-        LOGGER.info("Fetching stats for {}", user);
+        LOGGER.info("Fetching stats for {}", user.getName());
 
         long total = reminderRepository.countByUserId(user.getId());
         long pending = reminderRepository.countByUserIdAndStatus(user.getId(), ReminderStatus.PENDING);
@@ -151,6 +152,6 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
                 null, java.util.Collections.emptyList(), null, null, null);
         return new ReminderResponse(
                 r.getId(), contentResp, r.getScheduledAt(),
-                r.getRecurrence(), r.getMessage(), r.getStatus(), r.getCreatedAt());
+                r.getZoneId(), r.getRecurrence(), r.getMessage(), r.getStatus(), r.getCreatedAt());
     }
 }

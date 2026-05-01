@@ -14,31 +14,34 @@ public class Reminder {
     private String contentId;
     private ContentSnapshot contentSnapshot;
     private LocalDateTime scheduledAt;
+    private String zoneId;
     private Recurrence recurrence;
     private String message;
     private ReminderStatus status;
     private LocalDateTime createdAt;
 
-    public Reminder(String id, String userId, String userFcmToken, String contentId, ContentSnapshot contentSnapshot, LocalDateTime scheduledAt, Recurrence recurrence, String message, ReminderStatus status, LocalDateTime createdAt) {
+    public Reminder(String id, String userId, String userFcmToken, String contentId, ContentSnapshot contentSnapshot, LocalDateTime scheduledAt, String zoneId, Recurrence recurrence, String message, ReminderStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.userId = userId;
         this.userFcmToken = userFcmToken;
         this.contentId = contentId;
         this.contentSnapshot = contentSnapshot;
         this.scheduledAt = scheduledAt;
+        this.zoneId = zoneId;
         this.recurrence = recurrence;
         this.message = message;
         this.status = status;
         this.createdAt = createdAt;
     }
 
-    public Reminder(String id, String userId, String userFcmToken, String contentId, ContentSnapshot contentSnapshot, LocalDateTime scheduledAt, String message, LocalDateTime createdAt) {
+    public Reminder(String id, String userId, String userFcmToken, String contentId, ContentSnapshot contentSnapshot, LocalDateTime scheduledAt, String zoneId, String message, LocalDateTime createdAt) {
         this.id = id;
         this.userId = userId;
         this.userFcmToken = userFcmToken;
         this.contentId = contentId;
         this.contentSnapshot = contentSnapshot;
         this.scheduledAt = scheduledAt;
+        this.zoneId = zoneId;
         this.recurrence = Recurrence.ONCE;
         this.message = message;
         this.status = ReminderStatus.PENDING;
@@ -91,6 +94,14 @@ public class Reminder {
 
     public void setScheduledAt(LocalDateTime scheduledAt) {
         this.scheduledAt = scheduledAt;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
     }
 
     public Recurrence getRecurrence() {
