@@ -8,12 +8,14 @@ public class ReminderRequest {
 
     private String contentId;
     private LocalDateTime scheduledAt;
+    private String zoneId;
     private Recurrence recurrence;
     private String message;
 
-    public ReminderRequest(String contentId, LocalDateTime scheduledAt, Recurrence recurrence, String message) {
+    public ReminderRequest(String contentId, LocalDateTime scheduledAt, String zoneId, Recurrence recurrence, String message) {
         this.contentId = contentId;
         this.scheduledAt = scheduledAt;
+        this.zoneId = zoneId;
         this.recurrence = recurrence;
         this.message = message;
     }
@@ -24,6 +26,10 @@ public class ReminderRequest {
 
     public LocalDateTime getScheduledAt() {
         return scheduledAt;
+    }
+
+    public String getZoneId() {
+        return zoneId;
     }
 
     public Recurrence getRecurrence() {

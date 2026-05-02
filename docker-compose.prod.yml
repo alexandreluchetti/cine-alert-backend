@@ -1,0 +1,105 @@
+version: '3.9'
+
+networks:
+  cinealert-network:
+    external: false
+
+services:
+
+  traefik:
+    image: traefik:v2.11
+    container_name: cinealert-traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/acme.json:/acme.json
+    networks:
+      - cinealert-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.middlewares=traefik-auth"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_DASHBOARD_USER}"
+
+  mongodb:
+    image: mongo:7
+    container_name: cinealert-mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: cinealert
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - ./mongodb/data:/data/db
+    networks:
+      - cinealert-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cinealert-backend
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - FIREBASE_ENABLED=${FIREBASE_ENABLED:-false}
+      - FIREBASE_CREDENTIALS_PATH=${FIREBASE_CREDENTIALS_PATH:-}
+      - MAIL_HOST=${MAIL_HOST:-smtp.gmail.com}
+      - MAIL_PORT=${MAIL_PORT:-587}
+      - MAIL_USERNAME=${MAIL_USERNAME:-}
+      - MAIL_PASSWORD=${MAIL_PASSWORD:-}
+      - IMDB_API_KEY=${IMDB_API_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    volumes:
+      - ${FIREBASE_CREDENTIALS_HOST_PATH}:/app/firebase-credentials.json:ro
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - cinealert-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.${DOMAIN}`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.backend.loadbalancer.server.port=8080"
+      - "traefik.http.routers.backend.middlewares=security-headers"
+      - "traefik.http.middlewares.security-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.security-headers.headers.stsIncludeSubdomains=true"
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: cinealert-mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASS}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - cinealert-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mongo-express.rule=Host(`db.${DOMAIN}`)"
+      - "traefik.http.routers.mongo-express.entrypoints=websecure"
+      - "traefik.http.routers.mongo-express.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"

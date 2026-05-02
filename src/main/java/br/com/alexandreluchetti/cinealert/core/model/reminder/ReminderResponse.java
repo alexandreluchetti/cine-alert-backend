@@ -11,15 +11,17 @@ public class ReminderResponse {
     private String id;
     private ContentResponse content;
     private LocalDateTime scheduleAt;
+    private String zoneId;
     private Recurrence recurrence;
     private String message;
     private ReminderStatus status;
     private LocalDateTime createdAt;
 
-    public ReminderResponse(String id, ContentResponse content, LocalDateTime scheduleAt, Recurrence recurrence, String message, ReminderStatus status, LocalDateTime createdAt) {
+    public ReminderResponse(String id, ContentResponse content, LocalDateTime scheduleAt, String zoneId, Recurrence recurrence, String message, ReminderStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.content = content;
         this.scheduleAt = scheduleAt;
+        this.zoneId = zoneId;
         this.recurrence = recurrence;
         this.message = message;
         this.status = status;
@@ -36,6 +38,10 @@ public class ReminderResponse {
 
     public LocalDateTime getScheduleAt() {
         return scheduleAt;
+    }
+
+    public String getZoneId() {
+        return zoneId;
     }
 
     public Recurrence getRecurrence() {

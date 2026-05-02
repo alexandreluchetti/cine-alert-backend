@@ -49,7 +49,8 @@ erDiagram
         String user_fcm_token
         String content_id FK
         Object content_snapshot "Denormalized content data"
-        LocalDateTime scheduled_at
+        LocalDateTime scheduled_at "UTC"
+        String zone_id "IANA zone do dispositivo"
         String recurrence
         String message
         String status
@@ -166,6 +167,8 @@ flutter run
 | PUT | `/api/reminders/{id}` | Atualizar lembrete |
 | DELETE | `/api/reminders/{id}` | Cancelar lembrete |
 | GET | `/api/reminders/stats` | Estatísticas |
+
+> **Timezone:** o campo `scheduledAt` deve ser enviado como `ZonedDateTime` ISO 8601 com offset (ex: `"2025-05-01T17:00:00-03:00"`). O backend armazena em UTC e devolve no timezone original do dispositivo.
 
 ### Usuário 🔒
 

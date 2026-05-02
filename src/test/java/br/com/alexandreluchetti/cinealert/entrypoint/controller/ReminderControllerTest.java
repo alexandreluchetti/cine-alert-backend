@@ -54,7 +54,7 @@ class ReminderControllerTest {
     @Test
     void getAll_returns200() throws Exception {
         ReminderResponse rr = new ReminderResponse("r-1", buildContentResponse(), LocalDateTime.now(),
-                Recurrence.ONCE, "Msg", ReminderStatus.PENDING, LocalDateTime.now());
+                "America/Sao_Paulo", Recurrence.ONCE, "Msg", ReminderStatus.PENDING, LocalDateTime.now());
 
         when(userUseCase.getAuthenticatedUser(any())).thenReturn(null);
         when(reminderUseCase.getReminders(any(), any())).thenReturn(List.of(rr));
@@ -67,7 +67,7 @@ class ReminderControllerTest {
     @Test
     void create_returns201() throws Exception {
         ReminderResponse rr = new ReminderResponse("r-1", buildContentResponse(), LocalDateTime.now(),
-                Recurrence.ONCE, "Msg", ReminderStatus.PENDING, LocalDateTime.now());
+                "America/Sao_Paulo", Recurrence.ONCE, "Msg", ReminderStatus.PENDING, LocalDateTime.now());
 
         when(userUseCase.getAuthenticatedUser(any())).thenReturn(null);
         when(reminderUseCase.create(any(), any())).thenReturn(rr);
@@ -75,7 +75,7 @@ class ReminderControllerTest {
         String body = """
                 {
                     "contentId": "c-1",
-                    "scheduledAt": "2030-01-01T12:00:00"
+                    "scheduledAt": "2030-01-01T12:00:00Z"
                 }
                 """;
 
@@ -89,7 +89,7 @@ class ReminderControllerTest {
     @Test
     void getById_returns200() throws Exception {
         ReminderResponse rr = new ReminderResponse("r-1", buildContentResponse(), LocalDateTime.now(),
-                Recurrence.ONCE, "Msg", ReminderStatus.PENDING, LocalDateTime.now());
+                "America/Sao_Paulo", Recurrence.ONCE, "Msg", ReminderStatus.PENDING, LocalDateTime.now());
 
         when(userUseCase.getAuthenticatedUser(any())).thenReturn(null);
         when(reminderUseCase.getById(any(), eq("r-1"))).thenReturn(rr);
@@ -102,7 +102,7 @@ class ReminderControllerTest {
     @Test
     void update_returns200() throws Exception {
         ReminderResponse rr = new ReminderResponse("r-1", buildContentResponse(), LocalDateTime.now(),
-                Recurrence.ONCE, "Updated Msg", ReminderStatus.PENDING, LocalDateTime.now());
+                "America/Sao_Paulo", Recurrence.ONCE, "Updated Msg", ReminderStatus.PENDING, LocalDateTime.now());
 
         when(userUseCase.getAuthenticatedUser(any())).thenReturn(null);
         when(reminderUseCase.update(any(), eq("r-1"), any())).thenReturn(rr);
@@ -110,7 +110,7 @@ class ReminderControllerTest {
         String body = """
                 {
                     "contentId": "c-1",
-                    "scheduledAt": "2030-01-01T12:00:00",
+                    "scheduledAt": "2030-01-01T12:00:00Z",
                     "message": "Updated Msg"
                 }
                 """;

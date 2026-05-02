@@ -43,6 +43,8 @@ class ReminderUseCaseImplTest {
     private Content content;
     private ContentSnapshot snapshot;
 
+    private static final String ZONE = "America/Sao_Paulo";
+
     @BeforeEach
     void setUp() {
         reminderUseCase = new ReminderUseCaseImpl(reminderRepository, contentRepository);
@@ -91,7 +93,7 @@ class ReminderUseCaseImplTest {
     @Test
     void create_success_returnsReminderResponse() {
         ReminderRequest request = new ReminderRequest(
-                "content-1", LocalDateTime.now().plusDays(1), Recurrence.ONCE, "Watch this!");
+                "content-1", LocalDateTime.now().plusDays(1), ZONE, Recurrence.ONCE, "Watch this!");
 
         when(contentRepository.findById("content-1")).thenReturn(Optional.of(content));
 
@@ -105,9 +107,37 @@ class ReminderUseCaseImplTest {
     }
 
     @Test
+    void create_storesZoneIdOnReminder() {
+        ReminderRequest request = new ReminderRequest(
+                "content-1", LocalDateTime.now().plusDays(1), ZONE, Recurrence.ONCE, "Watch!");
+
+        when(contentRepository.findById("content-1")).thenReturn(Optional.of(content));
+        when(reminderRepository.save(any(Reminder.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        reminderUseCase.create(user, request);
+
+        verify(reminderRepository).save(argThat(r -> ZONE.equals(r.getZoneId())));
+    }
+
+    @Test
+    void create_zoneIdPropagatedToResponse() {
+        ReminderRequest request = new ReminderRequest(
+                "content-1", LocalDateTime.now().plusDays(1), ZONE, Recurrence.ONCE, "Watch!");
+
+        when(contentRepository.findById("content-1")).thenReturn(Optional.of(content));
+
+        Reminder saved = buildReminder("r-new", ReminderStatus.PENDING);
+        when(reminderRepository.save(any(Reminder.class))).thenReturn(saved);
+
+        ReminderResponse response = reminderUseCase.create(user, request);
+
+        assertThat(response.getZoneId()).isEqualTo(ZONE);
+    }
+
+    @Test
     void create_contentNotFound_throwsNotFound() {
         ReminderRequest request = new ReminderRequest(
-                "invalid-id", LocalDateTime.now().plusDays(1), null, null);
+                "invalid-id", LocalDateTime.now().plusDays(1), null, null, null);
 
         when(contentRepository.findById("invalid-id")).thenReturn(Optional.empty());
 
@@ -119,12 +149,10 @@ class ReminderUseCaseImplTest {
     @Test
     void create_nullRecurrence_defaultsToOnce() {
         ReminderRequest request = new ReminderRequest(
-                "content-1", LocalDateTime.now().plusDays(1), null, null);
+                "content-1", LocalDateTime.now().plusDays(1), ZONE, null, null);
 
         when(contentRepository.findById("content-1")).thenReturn(Optional.of(content));
-
-        Reminder saved = buildReminder("r-new", ReminderStatus.PENDING);
-        when(reminderRepository.save(any(Reminder.class))).thenReturn(saved);
+        when(reminderRepository.save(any(Reminder.class))).thenAnswer(inv -> inv.getArgument(0));
 
         reminderUseCase.create(user, request);
 
@@ -141,6 +169,7 @@ class ReminderUseCaseImplTest {
         ReminderResponse response = reminderUseCase.getById(user, "r-1");
 
         assertThat(response.getId()).isEqualTo("r-1");
+        assertThat(response.getZoneId()).isEqualTo(ZONE);
     }
 
     @Test
@@ -161,7 +190,7 @@ class ReminderUseCaseImplTest {
         when(reminderRepository.save(any(Reminder.class))).thenReturn(r);
 
         LocalDateTime newTime = LocalDateTime.now().plusDays(5);
-        ReminderRequest request = new ReminderRequest("content-1", newTime, Recurrence.DAILY, "Updated!");
+        ReminderRequest request = new ReminderRequest("content-1", newTime, ZONE, Recurrence.DAILY, "Updated!");
 
         ReminderResponse response = reminderUseCase.update(user, "r-1", request);
 
@@ -174,7 +203,7 @@ class ReminderUseCaseImplTest {
         Reminder sent = buildReminder("r-1", ReminderStatus.SENT);
         when(reminderRepository.findByIdAndUserId("r-1", "user-1")).thenReturn(Optional.of(sent));
 
-        ReminderRequest request = new ReminderRequest("content-1", LocalDateTime.now().plusDays(1), null, null);
+        ReminderRequest request = new ReminderRequest("content-1", LocalDateTime.now().plusDays(1), null, null, null);
 
         assertThatThrownBy(() -> reminderUseCase.update(user, "r-1", request))
                 .isInstanceOf(AppException.class)
@@ -235,6 +264,6 @@ class ReminderUseCaseImplTest {
     private Reminder buildReminder(String id, ReminderStatus status) {
         return new Reminder(id, "user-1", "fcm-token", "content-1",
                 snapshot, LocalDateTime.now().plusDays(1),
-                Recurrence.ONCE, "Watch this!", status, LocalDateTime.now());
+                ZONE, Recurrence.ONCE, "Watch this!", status, LocalDateTime.now());
     }
 }

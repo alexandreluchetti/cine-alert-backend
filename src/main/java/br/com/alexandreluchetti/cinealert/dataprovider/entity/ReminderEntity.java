@@ -41,6 +41,9 @@ public class ReminderEntity {
     @Field("scheduled_at")
     private LocalDateTime scheduledAt;
 
+    @Field("zone_id")
+    private String zoneId;
+
     @Builder.Default
     @Field("recurrence")
     private Recurrence recurrence = Recurrence.ONCE;
@@ -64,6 +67,7 @@ public class ReminderEntity {
                 reminder.getContentId(),
                 ContentSnapshotEntity.fromModel(reminder.getContentSnapshot()),
                 reminder.getScheduledAt(),
+                reminder.getZoneId(),
                 reminder.getRecurrence(),
                 reminder.getMessage(),
                 reminder.getStatus(),
@@ -79,6 +83,7 @@ public class ReminderEntity {
                 reminder.getContentId(),
                 ContentSnapshotEntity.fromModel(reminder.getContentSnapshot()),
                 reminder.getScheduledAt(),
+                reminder.getZoneId(),
                 Recurrence.ONCE,
                 reminder.getMessage(),
                 ReminderStatus.PENDING,
@@ -94,6 +99,7 @@ public class ReminderEntity {
                 contentId,
                 contentSnapshot.toModel(),
                 scheduledAt,
+                zoneId,
                 recurrence,
                 message,
                 status,
