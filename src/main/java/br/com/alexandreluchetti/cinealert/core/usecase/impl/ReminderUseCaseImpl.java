@@ -45,7 +45,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
 
     @Override
     public ReminderResponse create(User user, ReminderRequest request) {
-        LOGGER.info("Creating reminder for {}", request);
+        LOGGER.info("Creating reminder for {}", request.getContentId());
 
         Content content = contentRepository.findById(request.getContentId())
                 .orElseThrow(() -> AppException.notFound("Content not found"));
@@ -72,7 +72,7 @@ public class ReminderUseCaseImpl implements ReminderUseCase {
                 null
         );
 
-        LOGGER.info("Creating reminder for {}", reminder);
+        LOGGER.info("Creating reminder for {}", reminder.getContentId());
         return toResponse(reminderRepository.save(reminder));
     }
 

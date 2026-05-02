@@ -51,7 +51,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
 
         cacheContent(imdbId, response, cached.orElse(null));
 
-        LOGGER.info("Returning cached content {}", response);
+        LOGGER.info("Returning cached content {}", response.getTitle());
         return response;
     }
 
