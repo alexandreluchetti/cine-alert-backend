@@ -1,5 +1,6 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
+import br.com.alexandreluchetti.cinealert.core.model.reminder.Reminder;
 import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.model.user.UpdateUserRequest;
 import br.com.alexandreluchetti.cinealert.core.model.user.UserResponse;
@@ -12,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
 
 public class UserUseCaseImpl implements UserUseCase {
 
@@ -71,7 +74,20 @@ public class UserUseCaseImpl implements UserUseCase {
         LOGGER.info("Updating FCM token for {}", user.getEmail());
         user.setFcmToken(fcmToken);
         userRepository.save(user);
+
+        updateFcmTokenForPendingReminders(user, fcmToken);
         LOGGER.info("Updated FCM token for {}", user.getEmail());
+    }
+
+    private void updateFcmTokenForPendingReminders(User user, String fcmToken) {
+        List<Reminder> pending = reminderRepository
+                .findByUserIdAndStatusOrderByScheduledAtAsc(user.getId(), ReminderStatus.PENDING);
+
+        if (!pending.isEmpty()) {
+            pending.forEach(r -> r.setUserFcmToken(fcmToken));
+            reminderRepository.saveAll(pending);
+            LOGGER.info("Updated FCM token on {} pending reminder(s) for {}", pending.size(), user.getEmail());
+        }
     }
 
     @Override
