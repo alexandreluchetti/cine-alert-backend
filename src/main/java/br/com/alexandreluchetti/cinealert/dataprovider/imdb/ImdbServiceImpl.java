@@ -209,6 +209,8 @@ public class ImdbServiceImpl implements ImdbService {
             case "tvseries" -> ContentType.SERIES;
             case "tvminiseries" -> ContentType.MINI_SERIES;
             case "documentary" -> ContentType.DOCUMENTARY;
+            case "videogame" -> ContentType.VIDEO_GAME;
+            case "short" -> ContentType.SHORT;
             default -> ContentType.MOVIE;
         };
     }

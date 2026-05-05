@@ -1,7 +1,11 @@
 package br.com.alexandreluchetti.cinealert.core.usecase.impl;
 
 import br.com.alexandreluchetti.cinealert.core.exception.AppException;
+import br.com.alexandreluchetti.cinealert.core.model.content.ContentSnapshot;
+import br.com.alexandreluchetti.cinealert.core.model.enums.ContentType;
+import br.com.alexandreluchetti.cinealert.core.model.enums.Recurrence;
 import br.com.alexandreluchetti.cinealert.core.model.enums.ReminderStatus;
+import br.com.alexandreluchetti.cinealert.core.model.reminder.Reminder;
 import br.com.alexandreluchetti.cinealert.core.model.user.UpdateUserRequest;
 import br.com.alexandreluchetti.cinealert.core.model.user.User;
 import br.com.alexandreluchetti.cinealert.core.model.user.UserResponse;
@@ -15,11 +19,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+
+import org.mockito.InOrder;
 
 @ExtendWith(MockitoExtension.class)
 class UserUseCaseImplTest {
@@ -122,13 +131,84 @@ class UserUseCaseImplTest {
     // ─────────────────────────── updateFcmToken ───────────────────────────
 
     @Test
-    void updateFcmToken_savesToken() {
+    void updateFcmToken_noPendingReminders_onlySavesUser() {
         when(userRepository.save(any(User.class))).thenReturn(user);
+        when(reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc("user-1", ReminderStatus.PENDING))
+                .thenReturn(Collections.emptyList());
 
         userUseCase.updateFcmToken(user, "new-fcm-token");
 
         assertThat(user.getFcmToken()).isEqualTo("new-fcm-token");
         verify(userRepository).save(user);
+        verify(reminderRepository, never()).saveAll(any());
+    }
+
+    @Test
+    void updateFcmToken_withPendingReminders_updatesTokenOnAll() {
+        ContentSnapshot snapshot = new ContentSnapshot("tt123", "Inception", ContentType.MOVIE, "url", 2010);
+        Reminder r1 = new Reminder("r-1", "user-1", "old-token", "c-1", snapshot,
+                LocalDateTime.now().plusDays(1), "America/Sao_Paulo", Recurrence.ONCE, null, ReminderStatus.PENDING, null);
+        Reminder r2 = new Reminder("r-2", "user-1", "old-token", "c-2", snapshot,
+                LocalDateTime.now().plusDays(2), "America/Sao_Paulo", Recurrence.DAILY, null, ReminderStatus.PENDING, null);
+
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc("user-1", ReminderStatus.PENDING))
+                .thenReturn(List.of(r1, r2));
+
+        userUseCase.updateFcmToken(user, "new-fcm-token");
+
+        assertThat(user.getFcmToken()).isEqualTo("new-fcm-token");
+        assertThat(r1.getUserFcmToken()).isEqualTo("new-fcm-token");
+        assertThat(r2.getUserFcmToken()).isEqualTo("new-fcm-token");
+        verify(reminderRepository).saveAll(List.of(r1, r2));
+    }
+
+    @Test
+    void updateFcmToken_withSinglePendingReminder_updatesToken() {
+        ContentSnapshot snapshot = new ContentSnapshot("tt123", "Inception", ContentType.MOVIE, "url", 2010);
+        Reminder r = new Reminder("r-1", "user-1", "old-token", "c-1", snapshot,
+                LocalDateTime.now().plusDays(1), "America/Sao_Paulo", Recurrence.ONCE, null, ReminderStatus.PENDING, null);
+
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc("user-1", ReminderStatus.PENDING))
+                .thenReturn(List.of(r));
+
+        userUseCase.updateFcmToken(user, "new-fcm-token");
+
+        assertThat(r.getUserFcmToken()).isEqualTo("new-fcm-token");
+        verify(reminderRepository).saveAll(List.of(r));
+    }
+
+    @Test
+    void updateFcmToken_savesUserBeforeUpdatingReminders() {
+        // Garante que o token do usuário é persistido ANTES de propagar para os reminders
+        ContentSnapshot snapshot = new ContentSnapshot("tt123", "Inception", ContentType.MOVIE, "url", 2010);
+        Reminder r = new Reminder("r-1", "user-1", "old-token", "c-1", snapshot,
+                LocalDateTime.now().plusDays(1), "America/Sao_Paulo", Recurrence.ONCE, null, ReminderStatus.PENDING, null);
+
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc("user-1", ReminderStatus.PENDING))
+                .thenReturn(List.of(r));
+
+        userUseCase.updateFcmToken(user, "new-fcm-token");
+
+        InOrder inOrder = inOrder(userRepository, reminderRepository);
+        inOrder.verify(userRepository).save(user);
+        inOrder.verify(reminderRepository).saveAll(any());
+    }
+
+    @Test
+    void updateFcmToken_onlyQueriesPendingStatus() {
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(reminderRepository.findByUserIdAndStatusOrderByScheduledAtAsc("user-1", ReminderStatus.PENDING))
+                .thenReturn(Collections.emptyList());
+
+        userUseCase.updateFcmToken(user, "new-fcm-token");
+
+        // Garante que somente PENDING é consultado — SENT e CANCELLED não são tocados
+        verify(reminderRepository).findByUserIdAndStatusOrderByScheduledAtAsc("user-1", ReminderStatus.PENDING);
+        verify(reminderRepository, never()).findByUserIdAndStatusOrderByScheduledAtAsc(any(), eq(ReminderStatus.SENT));
+        verify(reminderRepository, never()).findByUserIdAndStatusOrderByScheduledAtAsc(any(), eq(ReminderStatus.CANCELLED));
     }
 
     // ─────────────────────────── deleteAccount ───────────────────────────

@@ -49,10 +49,9 @@ public class ContentUseCaseImpl implements ContentUseCase {
         ContentResponse response = imdbService.getDetail(imdbId)
                 .orElseThrow(() -> AppException.notFound("Content not found: " + imdbId));
 
-        cacheContent(imdbId, response, cached.orElse(null));
-
-        LOGGER.info("Returning cached content {}", response);
-        return response;
+        Content cachedContent = cacheContent(imdbId, response, cached.orElse(null));
+        LOGGER.info("Returning cached content {}", cachedContent.getTitle());
+        return toResponse(cachedContent);
     }
 
     @Override
@@ -102,7 +101,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
         return imdbService.getGenres();
     }
 
-    private void cacheContent(String imdbId, ContentResponse response, Content existing) {
+    private Content cacheContent(String imdbId, ContentResponse response, Content existing) {
         Content content = existing != null ? existing : new Content(imdbId);
         content.setTitle(response.getTitle());
         content.setType(response.getType());
@@ -115,7 +114,7 @@ public class ContentUseCaseImpl implements ContentUseCase {
         content.setRuntimeMinutes(response.getRuntimeMinutes());
         content.setCachedAt(LocalDateTime.now());
         LOGGER.info("Cached content for imdb {}", imdbId);
-        contentRepository.save(content);
+        return contentRepository.save(content);
     }
 
     private ContentResponse toResponse(Content c) {

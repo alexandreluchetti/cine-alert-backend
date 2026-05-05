@@ -4,5 +4,7 @@ public enum ContentType {
     MOVIE,
     SERIES,
     MINI_SERIES,
-    DOCUMENTARY
+    DOCUMENTARY,
+    VIDEO_GAME,
+    SHORT
 }

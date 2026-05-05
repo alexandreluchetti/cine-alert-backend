@@ -31,7 +31,7 @@ app:
 logging:
   level:
     root: WARN
-    br.com.alexandreluchetti.cinealert: INFO
+    br.com.alexandreluchetti.cinealert: DEBUG
     org.springframework.security: WARN
 
 management:
