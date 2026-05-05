@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -89,6 +90,16 @@ public class GlobalExceptionHandler {
         if (!response.isCommitted()) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException ex, HttpServletResponse response) {
+        if (response.isCommitted()) {
+            return null;
+        }
+        log.debug("No resource found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(new ErrorResponse(404, "Not Found", "Resource not found", LocalDateTime.now()));
     }
 
     @ExceptionHandler(Exception.class)
