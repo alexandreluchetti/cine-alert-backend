@@ -8,6 +8,7 @@ spring:
   data:
     mongodb:
       uri: ${MONGO_URI:mongodb://cinealert_user:cinealert_pass@localhost:27017/cinealert?authSource=admin}
+      auto-index-creation: true
 
   jackson:
     default-property-inclusion: non_null

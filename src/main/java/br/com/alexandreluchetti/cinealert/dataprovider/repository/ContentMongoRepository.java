@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ContentMongoRepository extends MongoRepository<ContentEntity, String> {
 
-    Optional<ContentEntity> findByImdbId(String imdbId);
+    Optional<ContentEntity> findFirstByImdbId(String imdbId);
 
     boolean existsByImdbId(String imdbId);
 }

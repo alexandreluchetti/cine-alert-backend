@@ -19,7 +19,7 @@ public class ContentRepositoryImpl implements ContentRepository {
 
     @Override
     public Optional<Content> findByImdbId(String imdbId) {
-        return contentMongoRepository.findByImdbId(imdbId).map(ContentEntity::toModel);
+        return contentMongoRepository.findFirstByImdbId(imdbId).map(ContentEntity::toModel);
     }
 
     @Override

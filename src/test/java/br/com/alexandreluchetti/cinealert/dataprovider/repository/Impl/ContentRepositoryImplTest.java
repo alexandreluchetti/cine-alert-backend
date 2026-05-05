@@ -35,7 +35,7 @@ class ContentRepositoryImplTest {
     @Test
     void findByImdbId_returnsContent() {
         ContentEntity entity = buildContentEntity();
-        when(contentMongoRepository.findByImdbId("tt123")).thenReturn(Optional.of(entity));
+        when(contentMongoRepository.findFirstByImdbId("tt123")).thenReturn(Optional.of(entity));
 
         Optional<Content> result = contentRepositoryImpl.findByImdbId("tt123");
 
